@@ -67,3 +67,6 @@ fshare/fshare/db/fshare.sqlite3
  
 # Local settings
 fshare/fshare/settings/local.py
+
+# PyCharm
+.idea/
