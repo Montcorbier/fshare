@@ -55,3 +55,15 @@ docs/_build/
 
 # PyBuilder
 target/
+
+# Mac OS Temporary files
+.DS_Store
+
+# Vim Swap files
+*.swp
+
+# Database
+fshare/fshare/db/fshare.sqlite3
+ 
+# Local settings
+fshare/fshare/settings/local.py
