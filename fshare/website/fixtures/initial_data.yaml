@@ -1,0 +1,16 @@
+- model: website.Permission
+  pk: admin
+  fields:
+      storage_limit: 1000000
+      base_path: media/admin
+- model: website.Permission
+  pk: regular
+  fields:
+      storage_limit: 100000
+      base_path: media/regular 
+- model: website.FSUser
+  pk: 1
+  fields:
+      username: admin
+      password: pbkdf2_sha256$20000$KxR25Kq0Wiw1$A/QqQcLftu72XL5zuBapfVZFifu+krrM1bwYLHVfA7Q=
+      permission: admin

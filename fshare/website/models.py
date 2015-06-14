@@ -49,3 +49,38 @@ class File(RandomPrimaryIdModel):
     # hash of the password
     pwd_hash = models.CharField(max_length=512, blank=True, null=True)
 
+
+class Permission(models.Model):
+    """
+        Class of permissions for a given user.
+        Defines storage space, location of storage, etc.
+
+    """
+    # Name of the permission category
+    name = models.CharField(max_length=255, primary_key=True)
+    # Max storage space in bytes
+    storage_limit = models.IntegerField(default=100000)
+    # Location where to store the files
+    base_path = models.CharField(max_length=1024, null=False, blank=False)
+
+
+class RegistrationKey(models.Model):
+    """
+        Model for key needed for registration
+
+    """
+    # Registration key (can be used only once)
+    key = models.CharField(max_length=100, null=False, blank=False)
+    # Has it been used yet ?
+    used = models.BooleanField(default=False)
+    # Corresponding permission
+    permission = models.ForeignKey(Permission, null=False, blank=False)
+
+
+class FSUser(User):
+    """
+        Defines a user with specified permissions
+
+    """
+    permission = models.ForeignKey(Permission, null=False, blank=False)
+
