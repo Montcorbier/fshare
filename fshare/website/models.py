@@ -77,10 +77,11 @@ class RegistrationKey(models.Model):
     permission = models.ForeignKey(Permission, null=False, blank=False)
 
 
-class FSUser(User):
+class FSUser(models.Model):
     """
         Defines a user with specified permissions
 
     """
+    user = models.OneToOneField(User)
     permission = models.ForeignKey(Permission, null=False, blank=False)
 
