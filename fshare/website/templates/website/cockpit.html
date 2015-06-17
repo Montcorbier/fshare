@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h3>Cockpit</h3>
+    {% for p in perms %}
+    <p>{{ p.name }} | {{ p.storage_limit }} | <a href="{% url 'generate_registration_key' %}?class={{ p.name }}">Generate registration key</a></p>
+    {% endfor %}
+    <form action="{% url 'cockpit' %}" method="post">
+        {% csrf_token %}
+        {{ perm_form.as_p }}
+        <input type="submit">
+    </form>
+{% endblock %}

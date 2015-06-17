@@ -5,6 +5,8 @@ from django.contrib.auth.views import logout as django_logout
 urlpatterns = [
     url(r'^$', 'website.views.index', name="index"),
     url(r'^myfiles$', 'website.views.myfiles', name="myfiles"),
+    url(r'^cockpit$', 'website.views.cockpit', name="cockpit"),
+    url(r'^generate_registration_key$', 'website.views.generate_registration_key', name="generate_registration_key"),
 
     # Authentication views
     url(r'^register$', 'website.views.register', name="register"),
