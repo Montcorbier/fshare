@@ -1,0 +1,15 @@
+<html>
+    <head>
+        <title>Fshare - {% block title %}{% endblock %}</title>
+    </head>
+    <body>
+        {% if user.is_authenticated %}
+            <h2> Hello, {{ user.username }}</h2>
+            <a href="{% url 'logout' %}">Logout</a>
+        {% else %}
+            <a href="{% url 'login' %}">Login</a>
+            <a href="{% url 'register' %}">Sign in</a>
+        {% endif %}
+        {% block content %}{% endblock %}
+    </body>
+</html>
