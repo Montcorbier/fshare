@@ -16,3 +16,16 @@ def storage(request):
     #TODO add free space left
     return ctxt
 
+
+def permission(request):
+    """
+        Add a flag relative to user permission (admin or not).
+        This flag is used to show (or not) link to cockpit in nav bar
+
+    """
+    ctxt = dict()
+    if not request.user.is_authenticated() or request.user.is_anonymous():
+        ctxt["is_admin"] = False
+    else:
+        ctxt["is_admin"] = (FSUser.objects.get(user=request.user).permission.name == "admin")
+    return ctxt

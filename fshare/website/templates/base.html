@@ -3,8 +3,13 @@
         <title>Fshare - {% block title %}{% endblock %}</title>
     </head>
     <body>
+        <a href="{% url 'index' %}">Home</a>
         {% if user.is_authenticated %}
             <h2> Hello, {{ user.username }} | Limit: {{ storage_limit }} </h2>
+            <a href="{% url 'myfiles' %}">My files</a>
+            {% if is_admin %}
+                <a href="{% url 'cockpit' %}">Cockpit</a>
+            {% endif %}
             <a href="{% url 'logout' %}">Logout</a>
         {% else %}
             <a href="{% url 'login' %}">Login</a>
