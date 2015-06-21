@@ -1,3 +1,17 @@
 {% block header %}
     <div id="title"><a href="{% url 'index' %}">FShare</a></div>
+    <nav>
+    {% block nav %}
+        {% if user.is_authenticated %}
+            <div class="nav-btn" id="nav-myfiles"><a href="{% url 'myfiles' %}">My files</a></div>
+            {% if is_admin %}
+                <div class="nav-btn" id="nav-cockpit"><a href="{% url 'cockpit' %}">Cockpit</a></div>
+            {% endif %}
+            <div class="nav-btn" id="nav-user"><a href="#" data-jq-dropdown="#user-menu">{{ user.username }}</a></div>
+        {% else %}
+            <div class="nav-btn" id="nav-login"><a href="{% url 'login' %}">login</a></div>
+            <div class="nav-btn" id="nav-signin"><a href="{% url 'register' %}">sign in</a></div>
+        {% endif %}
+    {% endblock %}
+    </nav>
 {% endblock %}

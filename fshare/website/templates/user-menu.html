@@ -1,0 +1,14 @@
+{% if user.is_authenticated and not user.is_anonymous %}
+    <div id="user-menu" class="jq-dropdown jq-dropdown-tip jq-dropdown-anchor-right">
+        <ul class="jq-dropdown-menu">
+            <li>
+                <div id="storage-percent-container">
+                    <p><label>storage used</label> <span class="value">{{ storage_percent }}%</span></p>
+                    <p><label>available</label> <span class="value">{{ storage_left }}</span></p>
+                </div>
+            </li>
+            <li class="jq-dropdown-divider"></li>
+            <li><a href="{% url 'logout' %}">Logout</a></li>
+        </ul>
+    </div> 
+{% endif %}

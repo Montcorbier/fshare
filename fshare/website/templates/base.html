@@ -5,20 +5,19 @@
         <title>FShare - {% block title %}{% endblock %}</title>
 
         {% load staticfiles %}
-        <link rel="stylesheet" href="{% static 'website/generated/css/style.css'%}" />
+        <link type="text/css" rel="stylesheet" href="{% static 'website/css/lib/jquery.dropdown.css' %}" />
+        <link type="text/css" rel="stylesheet" href="{% static 'website/generated/css/style.css'%}" />
 
         <script type="application/javascript" src="{% static 'website/js/lib/dropzone.js' %}"></script>
+        <script type="application/javascript" src="{% static 'website/js/lib/nanobar.min.js' %}"></script>
         <script type="application/javascript" src="{% static 'website/js/lib/jquery-1.11.3.min.js' %}"></script>
+        <script type="application/javascript" src="{% static 'website/js/lib/jquery.dropdown.js' %}"></script>
         <script type="application/javascript" src="{% static 'website/js/src/fshare_upload.js' %}"></script>
     </head>
     <body>
         <header>
             {% include "header.html" %}
         </header>
-        <nav>
-            {% include "nav.html" %}
-        </nav>
-        <hr>
 
         <section>
         <h2> Hello, {{ user.username }} | Limit: {{ storage_limit }} </h2>
@@ -27,5 +26,18 @@
 
         <footer>
         </footer>
+
+        <script>
+            $(document).ready(function() {
+                var options = { 
+                    id : "storage-percent-bar",
+                    target: document.getElementById("storage-percent-container"),
+                    bg: "#9B59B6",
+                }
+                var nanobar = new Nanobar(options);
+                nanobar.go({{ storage_percent }});
+            });
+        </script>
+        {% include "user-menu.html" %}
     </body>
 </html>
