@@ -1,10 +1,10 @@
-from django.shortcuts import render, redirect, HttpResponse
+from django.shortcuts import render, redirect, HttpResponse, Http404
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required, user_passes_test
 
 from website.management.commands.generate_registration_key import Command as GenerateRegistrationKey
 from website.models import Permission, FSUser
-from website.forms import RegisterForm, PermissionForm
+from website.forms import RegisterForm, PermissionForm, UploadFileForm
 
 
 def index(request):
@@ -63,6 +63,23 @@ def is_admin(user):
     fsuser = FSUser.objects.get(user=user)
     return fsuser.permission.name == "admin"
 
+
+def upload(request):
+    """
+        Handle the file upload
+        (first version one file handled)
+    """
+    template = "website/upload.html"
+    context = {}
+
+    if request.method == "GET":
+        return render(request, template, context)
+    elif request.method == "POST":
+        form = UploadFileForm(request.POST, request.FILES)
+        if form.is_valid(request.user):
+            form.save()
+        return redirect('upload')
+    raise Http404
 
 @login_required(login_url="login")
 @user_passes_test(is_admin, login_url="index")

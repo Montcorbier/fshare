@@ -78,6 +78,7 @@ class PermissionForm(forms.ModelForm):
     class Meta:
         model = Permission
         fields = ['name', 'storage_limit', 'base_path']
+        # TODO handle base path field correctly
         widgets = {
                     'name': forms.TextInput(attrs={'placeholder': "permission class name", 'class': "form-control"}),
                     'storage_limit': forms.NumberInput(attrs={'placeholder': "storage limit (in bytes)", 'class': "form-control"}),
@@ -136,3 +137,19 @@ class PermissionForm(forms.ModelForm):
             os.mkdir(os.path.join(base_path, sub_path))
         return super(PermissionForm, self).save()
 
+
+class UploadFileForm(forms.Form):
+    file = forms.FileField()
+
+    def is_valid(self, user=None):
+        """
+            Override validation method
+            This method performs parent validation, plus check file size
+
+        """
+        if not super(UploadFileForm, self).is_valid():
+            return False
+        return user.fshare_user.can_upload(self.cleaned_data.get('file').size)
+
+    def save(self):
+        pass

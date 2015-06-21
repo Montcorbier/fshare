@@ -85,6 +85,13 @@ class FSUser(models.Model):
         Defines a user with specified permissions
 
     """
-    user = models.OneToOneField(User)
+    user = models.OneToOneField(User, related_name="fshare_user")
     permission = models.ForeignKey(Permission, null=False, blank=False)
 
+    def can_upload(self, size):
+        """
+            Check if a user can upload a file
+
+        """
+        # TODO: implements this method
+        return True

@@ -1,3 +1,5 @@
+{% load static %}
+
 <html>
     <head>
         <title>Fshare - {% block title %}{% endblock %}</title>
@@ -15,6 +17,12 @@
             <a href="{% url 'login' %}">Login</a>
             <a href="{% url 'register' %}">Sign in</a>
         {% endif %}
-        {% block content %}{% endblock %}
+        <div>
+            {% block content %}{% endblock %}
+        </div>
+
+        <script type="application/javascript" src="{% static 'website/js/lib/dropzone.js' %}"></script>
+        <script type="application/javascript" src="{% static 'website/js/lib/jquery-1.11.3.min.js' %}"></script>
+        <script type="application/javascript" src="{% static 'website/js/src/fshare_upload.js' %}"></script>
     </body>
 </html>
