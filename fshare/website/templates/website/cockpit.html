@@ -3,7 +3,7 @@
 {% block content %}
     <h3>Cockpit</h3>
     {% for p in perms %}
-    <p>{{ p.name }} | {{ p.storage_limit }} | <a href="{% url 'generate_registration_key' %}?class={{ p.name }}">Generate registration key</a></p>
+    <p>{{ p.name }} | {{ p.storage_limit }} | {{ p.base_path }} | <a href="{% url 'generate_registration_key' %}?class={{ p.name }}">Generate registration key</a></p>
     {% endfor %}
     <form action="{% url 'cockpit' %}" method="post">
         {% csrf_token %}

@@ -1,5 +1,8 @@
+import os
+
 from django.db import models
 from django.contrib.auth.models import User
+from django.conf import settings
 
 from website.random_primary import RandomPrimaryIdModel
 
@@ -61,7 +64,7 @@ class Permission(models.Model):
     # Max storage space in bytes
     storage_limit = models.IntegerField(default=100000)
     # Location where to store the files
-    base_path = models.CharField(max_length=1024, null=False, blank=False)
+    base_path = models.CharField(max_length=1024, null=False, blank=False, default=os.path.abspath(getattr(settings, "MEDIA_ROOT", "/tmp/")))
 
 
 class RegistrationKey(models.Model):
