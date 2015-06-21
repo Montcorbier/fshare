@@ -77,7 +77,7 @@ def upload(request):
     elif request.method == "POST":
         form = UploadFileForm(request.POST, request.FILES)
         if form.is_valid(request.user):
-            form.save()
+            form.save(request.user)
         return redirect('upload')
     raise Http404
 

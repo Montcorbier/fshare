@@ -151,5 +151,14 @@ class UploadFileForm(forms.Form):
             return False
         return user.fshare_user.can_upload(self.cleaned_data.get('file').size)
 
-    def save(self):
-        pass
+    def save(self, user):
+        folder = os.path.join(user.fshare_user.permission.base_path, user.username)
+        if not os.path.exists(folder):
+            os.makedirs(folder)
+
+        uploaded_file = self.cleaned_data.get('file')
+        filepath = "{0}/{1}".format(folder, uploaded_file)
+        with open(filepath, 'wb+') as destination:
+            for chunk in uploaded_file.chunks():
+                destination.write(chunk)
+        return filepath
