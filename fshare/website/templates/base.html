@@ -2,27 +2,30 @@
 
 <html>
     <head>
-        <title>Fshare - {% block title %}{% endblock %}</title>
-    </head>
-    <body>
-        <a href="{% url 'index' %}">Home</a>
-        {% if user.is_authenticated %}
-            <h2> Hello, {{ user.username }} | Limit: {{ storage_limit }} </h2>
-            <a href="{% url 'myfiles' %}">My files</a>
-            {% if is_admin %}
-                <a href="{% url 'cockpit' %}">Cockpit</a>
-            {% endif %}
-            <a href="{% url 'logout' %}">Logout</a>
-        {% else %}
-            <a href="{% url 'login' %}">Login</a>
-            <a href="{% url 'register' %}">Sign in</a>
-        {% endif %}
-        <div>
-            {% block content %}{% endblock %}
-        </div>
+        <title>FShare - {% block title %}{% endblock %}</title>
+
+        {% load staticfiles %}
+        <link rel="stylesheet" href="{% static 'website/generated/css/style.css'%}" />
 
         <script type="application/javascript" src="{% static 'website/js/lib/dropzone.js' %}"></script>
         <script type="application/javascript" src="{% static 'website/js/lib/jquery-1.11.3.min.js' %}"></script>
         <script type="application/javascript" src="{% static 'website/js/src/fshare_upload.js' %}"></script>
+    </head>
+    <body>
+        <header>
+            {% include "header.html" %}
+        </header>
+        <nav>
+            {% include "nav.html" %}
+        </nav>
+        <hr>
+
+        <section>
+        <h2> Hello, {{ user.username }} | Limit: {{ storage_limit }} </h2>
+        {% block content %}{% endblock %}
+        </section>
+
+        <footer>
+        </footer>
     </body>
 </html>

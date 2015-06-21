@@ -1,7 +1,10 @@
 {% extends 'base.html' %}
 
+{% block title %}Cockpit{% endblock %}
+
 {% block content %}
     <h3>Cockpit</h3>
+    You can see this page because you are admin. Other non-admin users cannot access the cockpit.
     {% for p in perms %}
     <p>{{ p.name }} | {{ p.storage_limit }} | {{ p.base_path }} | <a href="{% url 'generate_registration_key' %}?class={{ p.name }}">Generate registration key</a></p>
     {% endfor %}

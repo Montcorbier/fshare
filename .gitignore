@@ -69,3 +69,9 @@ fshare/fshare/settings/local.py
 
 # PyCharm
 .idea/
+
+# Generated css
+fshare/website/static/website/generated/css
+
+# Sass cache files
+.sass-cache*

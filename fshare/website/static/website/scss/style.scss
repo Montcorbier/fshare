@@ -1,0 +1,48 @@
+
+@import "color/purple.scss";
+@import "font.scss";
+
+$doc-margin: 50px;
+
+body {
+    position: relative;
+    background-color: $background-color;
+    color: $text-color;
+    width: 80%;
+    margin: auto;
+    height: 100%;
+    padding: $doc-margin;
+    font-family: $main-font;
+}
+
+header {
+    display: inline-block;
+    font-size: 2em;
+    a {
+        color: $dark-color;
+    }
+}
+
+hr {
+    color: $dark-color;
+    background-color: $dark-color;
+    height: 1px;
+    border-style: none;
+}
+
+nav {
+    display: inline-block;
+    div {
+        display: inline-block;
+    }
+    position: absolute;
+    right: $doc-margin;
+}
+
+a {
+    text-decoration: none;
+    color: $light-color;
+    &:hover {
+        color: $medium-color;
+    }
+}
