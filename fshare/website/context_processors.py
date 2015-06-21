@@ -12,7 +12,9 @@ def storage(request):
     ctxt = dict()
     if not request.user.is_authenticated() or request.user.is_anonymous():
         return ctxt
-    ctxt["storage_limit"] = FSUser.objects.get(user=request.user).permission.storage_limit
+    ctxt["storage_limit"] = FSUser.objects.get(user=request.user).storage_limit
+    ctxt["storage_left"] = FSUser.objects.get(user=request.user).storage_left
+    ctxt["storage_percent"] = FSUser.objects.get(user=request.user).storage_percent
     #TODO add free space left
     return ctxt
 

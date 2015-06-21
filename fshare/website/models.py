@@ -1,4 +1,5 @@
 import os
+from random import randint
 
 from django.db import models
 from django.contrib.auth.models import User
@@ -95,3 +96,16 @@ class FSUser(models.Model):
         """
         # TODO: implements this method
         return True
+
+    @property
+    def storage_limit(self):
+        return self.permission.storage_limit 
+
+    @property
+    def storage_left(self):
+        # TODO : change this. Must compute available space
+        return randint(0, self.storage_limit)
+
+    @property
+    def storage_percent(self):
+        return int(100. * (self.storage_limit - self.storage_left) / float(self.storage_limit))
