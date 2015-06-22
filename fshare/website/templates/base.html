@@ -1,4 +1,5 @@
 {% load static %}
+{% load fshare_extra %}
 
 <html>
     <head>
@@ -20,7 +21,7 @@
         </header>
 
         <section>
-        <h2> Hello, {{ user.username }} | Limit: {{ storage_limit }} </h2>
+        <h2> Hello, {{ user.username }} | Limit: {{ storage_limit | human_size }} </h2>
         {% block content %}{% endblock %}
         </section>
 
