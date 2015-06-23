@@ -3,7 +3,7 @@ from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required, user_passes_test
 
 from website.management.commands.generate_registration_key import Command as GenerateRegistrationKey
-from website.models import Permission, FSUser
+from website.models import Permission, FSUser, RegistrationKey
 from website.forms import RegisterForm, PermissionForm, UploadFileForm
 
 
@@ -12,6 +12,8 @@ def index(request):
         Home page - presentation of FShare
 
     """
+    if not request.user.is_anonymous() and request.user.is_authenticated():
+        return upload(request)
     ctxt = dict()
     tpl = "website/index.html"
     return render(request, tpl, ctxt)
@@ -101,7 +103,15 @@ def cockpit(request):
         perm_form.save()
         return redirect('cockpit')
     else:
-        # Else, show the form
+        # Else, add unused keys to context
+        ctxt["unused_keys"] = list()
+        ctxt["used_keys"] = list()
+        for key in RegistrationKey.objects.all():
+            if not key.used: 
+                ctxt["unused_keys"].append(key)
+            else:
+                ctxt["used_keys"].append(key)
+        # Show the form
         ctxt["perm_form"] = perm_form
     return render(request, tpl, ctxt)
 

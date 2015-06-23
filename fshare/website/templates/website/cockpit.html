@@ -1,16 +1,63 @@
 {% extends 'base.html' %}
 
+{% load staticfiles %}
+
+{% block additional_scripts %}
+    <script type="application/javascript" src="{% static 'website/js/src/cockpit.js' %}"></script>
+{% endblock %}
+
 {% block title %}Cockpit{% endblock %}
 
 {% block content %}
     <h3>Cockpit</h3>
     You can see this page because you are admin. Other non-admin users cannot access the cockpit.
-    {% for p in perms %}
-    <p>{{ p.name }} | {{ p.storage_limit }} | {{ p.base_path }} | <a href="{% url 'generate_registration_key' %}?class={{ p.name }}">Generate registration key</a></p>
-    {% endfor %}
-    <form action="{% url 'cockpit' %}" method="post">
-        {% csrf_token %}
-        {{ perm_form.as_p }}
-        <input type="submit">
-    </form>
+    <div id="pclass-management">
+        {% for p in perms %}
+            <p>{{ p.name }} | {{ p.storage_limit }} | {{ p.base_path }} | 
+            <input type="button" data-pclass="{{ p.name }}" class="reg-key-btn" value="Generate registration key"></p>
+        {% endfor %}
+        <div class="console" id="reg_key_console" rows="15" cols="50">
+            <div class="menu">
+                <p class="active" for="unused-keys">Unused</p>
+                <p for="distributed-keys">Distributed</p>
+                <p for="used-keys">Used</p>
+            </div>
+            <div class="content">
+                <span id="unused-keys">
+                    {% for key in unused_keys %}
+                        <p>
+                            <span class="label">
+                                {{ key.permission.name }}
+                            </span>
+                            {{ key.key }}
+                        <span class="control hidden">
+                            <span>mark as distributed</span>
+                            <span>revoke</span>
+                        </span>
+                        </p>
+                    {% endfor %}
+                </span>
+                <span id="distributed-keys" class="hidden">
+                    {% for key in distributed_keys %}
+                        <p>{{ key.key }} (for {{ key.permission.name }}) <input type="button" value="revoke" /></p>
+                    {% endfor %}
+                </span>
+                <span id="used-keys" class="hidden">
+                    {% for key in used_keys %}
+                        <p>(ok) {{ key.key }} (for {{ key.permission.name }})</p>
+                    {% endfor %}
+                </span>
+            </div>
+        </div>
+        <form action="{% url 'cockpit' %}" method="post">
+            {% csrf_token %}
+            {{ perm_form.as_p }}
+            <input type="submit">
+        </form>
+    </div>
+
+    <script>
+        var URL_REG_KEY = "{% url 'generate_registration_key' %}";
+    </script>
 {% endblock %}
+

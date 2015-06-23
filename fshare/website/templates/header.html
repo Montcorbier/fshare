@@ -3,14 +3,34 @@
     <nav>
     {% block nav %}
         {% if user.is_authenticated %}
-            <div class="nav-btn" id="nav-myfiles"><a href="{% url 'myfiles' %}">My files</a></div>
+            <a href="{% url 'myfiles' %}">
+                <div class="nav-btn" id="nav-myfiles">
+                    my files
+                </div>
+            </a>
             {% if is_admin %}
-                <div class="nav-btn" id="nav-cockpit"><a href="{% url 'cockpit' %}">Cockpit</a></div>
+                <a href="{% url 'cockpit' %}">
+                    <div class="nav-btn" id="nav-cockpit">
+                        cockpit
+                    </div>
+                </a>
             {% endif %}
-            <div class="nav-btn" id="nav-user"><a href="#" data-jq-dropdown="#user-menu">{{ user.username }}</a></div>
+            <a href="#" data-jq-dropdown="#user-menu">
+                <div class="nav-btn" id="nav-user">
+                    {{ user.username }}
+                </div>
+            </a>
         {% else %}
-            <div class="nav-btn" id="nav-login"><a href="{% url 'login' %}">login</a></div>
-            <div class="nav-btn" id="nav-signin"><a href="{% url 'register' %}">sign in</a></div>
+            <a href="{% url 'login' %}">
+                <div class="nav-btn" id="nav-login">
+                    login
+                </div>
+            </a>
+            <a href="{% url 'register' %}">
+                <div class="nav-btn" id="nav-signin">
+                    sign in
+                </div>
+            </a>
         {% endif %}
     {% endblock %}
     </nav>

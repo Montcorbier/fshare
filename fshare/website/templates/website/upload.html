@@ -1,7 +1,8 @@
 {% extends "base.html" %}
 
+{% block title %}Upload{% endblock %}
+
 {% block content %}
-    Yo from here you can upload your file bro'
     <form action="/upload" class="dropzone" id="dropzone">
         {% csrf_token %}
     </form>
