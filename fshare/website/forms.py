@@ -44,7 +44,7 @@ class RegisterForm(UserCreationForm):
             key = RegistrationKey.objects.get(key=self.cleaned_data["registration_key"])
         except ObjectDoesNotExist:
             return False
-        if key.used:
+        if key.used or key.revoked:
             return False
         return True
 

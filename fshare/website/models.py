@@ -77,6 +77,10 @@ class RegistrationKey(models.Model):
     key = models.CharField(max_length=100, null=False, blank=False)
     # Has it been used yet ?
     used = models.BooleanField(default=False)
+    # Has it been distributed yet ?
+    distributed = models.BooleanField(default=False)
+    # Has it been revoked by admin ?
+    revoked = models.BooleanField(default=False)
     # Corresponding permission
     permission = models.ForeignKey(Permission, null=False, blank=False)
 
