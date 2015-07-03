@@ -4,4 +4,10 @@
     src: url("../../fonts/Existence-Light.otf");
 }
 
-$main-font: "Existence";
+@font-face {
+    font-family: Open Sans;
+    src: url("../../fonts/OpenSans-Light.ttf");
+}
+
+$title-font: "Existence";
+$main-font: "Open Sans";

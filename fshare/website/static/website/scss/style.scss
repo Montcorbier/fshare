@@ -18,9 +18,24 @@ body {
     font-family: $main-font;
 }
 
+a {
+    text-decoration: none;
+    color: $light-color;
+    &:hover {
+        color: $dark-color;
+    }
+}
+
 header {
     $hdr-size: 50px;
-    background-color: $medium-color;
+
+    border-style: solid;
+    border-width: 0px 0px 1px 0px;
+    border-color: $medium-color;
+
+    margin-left: 10px;
+    margin-right: 10px;
+
     height: $hdr-size;
     padding-left: $doc-margin;
     padding-right: $doc-margin;
@@ -30,8 +45,9 @@ header {
     }
     #title {
         font-size: 2em;
+        font-family: $title-font;
         a { 
-            color: $light-color;
+            color: $dark-color;
         }
     }
     nav {
@@ -39,23 +55,27 @@ header {
         position: absolute;
         right: $doc-margin;
         div {
-            height: $hdr-size - 6px;
-            margin-top: 3px;
+            height: $hdr-size - 3px;
+            margin-top: 1px;
             padding-left: 10px;
             padding-right: 10px;
 
+            &.active {
+                border-style: solid;
+                border-width: 0px 0px 1px 0px;
+                border-color: $light-color;
+            }
+
             &:hover {
                 border-style: solid;
-                border-width: 0px 0px 3px 0px;
+                border-width: 0px 0px 1px 0px;
                 border-color: $very-light-color;
             }
         }
-    }
-
-    a {
-        text-decoration: none;
-        color: white;
-        &:hover {
+        
+        a {
+            text-decoration: none;
+            color: $medium-color;
         }
     }
 }
@@ -118,13 +138,57 @@ header {
     }
 }
 
+
+#pclass-management {
+    select {
+        display: block;
+        width: 80%;
+        height: 30px;
+        margin: auto;
+        float: center;
+
+        border-color: $medium-color;
+        border-radius: 2px; 
+    }
+
+    .info {
+        &>span, &>input {
+            display: block;
+            label {
+                font-weight: bold;
+            }
+        }
+    }
+
+    .reg-key-btn {
+        display: block;
+        width: 80%; 
+        height: 30px;
+        margin: auto;
+        float: center;
+
+        background-color: white;
+
+        border-color: $medium-color;
+        border-width: 1px;
+        border-radius: 2px;
+
+        &:hover {
+            background-color: $very-light-color;
+        }
+    }
+}
+
+
 .console {
     $csl-height: 200px;
     $cls-menu-width: 100px;
+    $csl-control-width: 200px;
+    $csl-color: #F0F0F0;
 
     position: relative;
 
-    width: 70%;
+    width: 90%;
     margin: auto;
 
     .menu {
@@ -178,29 +242,50 @@ header {
         padding-bottom: 5px;
         padding-left: 10px;
         padding-right: 10px;
+
+        background-color: $csl-color;
     
         font-size: 0.6em;
         font-family: "PT Mono" Serif;
-    
+            
         overflow-y: scroll;
     
-        p {
-            margin: 0px;
-            margin-bottom: 5px;
-            height: 15px;
-            &:hover {
-                cursor: pointer;
-            }
-            .control {
-                float: right;
-                span {
-                    background-color: $very-light-color;
-                    padding: 3px;
-                    padding-left: 10px;
-                    padding-right: 10px;
-                    border-radius: 3px;
-                    &:hover {
-                        cursor: pointer;
+        &>div {
+            max-height: $csl-height;
+            width: 100%;
+
+            p {
+                margin: 0px;
+                margin-bottom: 5px;
+                height: 15px;
+                &:hover {
+                    cursor: pointer;
+                }
+                &>input {
+                    position: absolute;
+                    left: 5px;
+                    right: $csl-control-width;
+                    height: 15px;
+                    line-height: 15px;
+
+                    font-size: 0.9em;
+                    background-color: $csl-color;
+                    border-style: none;
+                    text-overflow: ellipsis;
+                }
+                .control {
+                    float: right;
+                    height: 15px;
+                    vertical-align: center;
+                    span {
+                        background-color: $very-light-color;
+                        padding: 3px;
+                        padding-left: 10px;
+                        padding-right: 10px;
+                        border-radius: 3px;
+                        &:hover {
+                            cursor: pointer;
+                        }
                     }
                 }
             }
@@ -210,6 +295,8 @@ header {
     
 section {
 
+    padding: 50px;
+
     #pclass-management {
         .reg-key-btn {
             &:hover {
@@ -218,4 +305,56 @@ section {
         }
     }
 
+    &>div {
+        border-style: solid;
+        border-color: $medium-color;
+        border-width: 0px 0px 0px 1px;
+
+        width: 70%;
+
+        margin-bottom: 30px;
+
+        padding-left: 15px;
+        padding-top: 10px;
+        padding-bottom: 10px;
+
+        font-size: 0.9em;
+        &:hover {
+            border-color: $very-light-color;
+            border-width: 0px 0px 0px 1px;
+        }
+
+        h3 {
+            font-size: 1.1em;
+            font-weight: bold;
+            color: $dark-color;
+        }
+
+        h4 {
+            &:before {
+                content: "> ";
+            }
+        }
+    }
 }
+
+.note {
+    border-style: solid;
+    border-color: $medium-color;
+    border-width: 0px 0px 0px 1px;
+    
+    font-size: 0.8em;
+    font-style: italic;
+
+    &:before {
+        content: "Note. ";
+        font-weight: bold;
+        font-style: normal;
+    }
+}
+
+.chardinjs-tooltiptext {
+    font-size: 0.8em;
+    text-align: justify;
+}
+

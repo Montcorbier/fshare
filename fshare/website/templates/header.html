@@ -1,16 +1,36 @@
 {% block header %}
-    <div id="title"><a href="{% url 'index' %}">FShare</a></div>
-    <nav>
+    <div class="animated fadeInLeft" id="title"><a href="{% url 'index' %}">FShare</a></div>
+    <script>
+        $('#title').one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function() {
+            $(this).removeClass("animated");
+            $(this).removeClass("pulse");
+            $(this).removeClass("fadeInLeft");
+        });
+        $("#title").hover(function() {
+            $(this).addClass("pulse");
+            $(this).addClass("animated");
+            $(this).addClass("infinite");
+        }, function() {
+            $(this).removeClass("pulse");
+            $(this).removeClass("animated");
+            $(this).removeClass("infinite");
+        });
+
+    </script>
+    <nav class="animated fadeInRight">
     {% block nav %}
         {% if user.is_authenticated %}
+            {% if title == "Cockpit" %}
+                <a href="#"><div id="help-btn">?</div></a>
+            {% endif %}
             <a href="{% url 'myfiles' %}">
-                <div class="nav-btn" id="nav-myfiles">
+                <div class="nav-btn {% if title == "My files" %} active {% endif %}" id="nav-myfiles">
                     my files
                 </div>
             </a>
             {% if is_admin %}
                 <a href="{% url 'cockpit' %}">
-                    <div class="nav-btn" id="nav-cockpit">
+                    <div class="nav-btn {% if title == "Cockpit" %}active{% endif %}" id="nav-cockpit">
                         cockpit
                     </div>
                 </a>
