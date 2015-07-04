@@ -1,10 +1,11 @@
+import hashlib
 import os
 
 from django import forms
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.forms import UserCreationForm
 
-from website.models import User, Permission, FSUser, RegistrationKey 
+from website.models import User, Permission, FSUser, RegistrationKey, File
 
 
 class RegisterForm(UserCreationForm):
@@ -158,7 +159,20 @@ class UploadFileForm(forms.Form):
 
         uploaded_file = self.cleaned_data.get('file')
         filepath = "{0}/{1}".format(folder, uploaded_file)
+        m = hashlib.md5()
         with open(filepath, 'wb+') as destination:
             for chunk in uploaded_file.chunks():
+                m.update(chunk)
                 destination.write(chunk)
+
+        new_file = File(
+            owner=user,
+            title="TODO",
+            private_label="TODO",
+            description="TODO",
+            path=filepath,
+            checksum=m.hexdigest(),
+            size=uploaded_file.size,
+        )
+        new_file.save()
         return filepath

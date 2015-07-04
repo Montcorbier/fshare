@@ -7,6 +7,7 @@ from django.conf import settings
 
 from website.random_primary import RandomPrimaryIdModel
 
+
 class File(RandomPrimaryIdModel):
     """
         Base model for files uploaded with fshare
