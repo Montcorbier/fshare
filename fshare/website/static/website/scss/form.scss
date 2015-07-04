@@ -1,0 +1,41 @@
+
+@import "color/purple.scss";
+
+select {
+    display: block;
+    float: center;
+    height: 30px;
+    border-color: $medium-color;
+    border-radius: 2px; 
+    margin: auto; 
+}
+
+input[type=button] {
+    display: block;
+    float: center;
+    height: 30px;
+    margin: auto;
+    background-color: white;
+    border-color: $medium-color;
+    border-width: 1px;
+    border-radius: 2px;
+    
+    &:hover {
+        background-color: $very-light-color;
+        cursor: pointer;
+    }
+}
+
+input[type=text][readonly] {
+    height: 20px;
+    line-height: 15px;
+
+    font-size: 0.9em;
+    border-width: 1px;
+    text-overflow: ellipsis;
+
+    &:hover {
+        background-color: white;
+        border-color: $medium-color;
+    }
+}

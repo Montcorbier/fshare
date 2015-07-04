@@ -109,6 +109,36 @@ var init_cockpit = function() {
         var key = $(".key", $(this).parent().parent()).val();
         revoke_key(key);
     });
+    /* Init carroussel */
+    $(".pclass-carrousel").slick({
+        centerMode: true,
+        vertical: true,
+        verticalSwiping: true,
+        slidesToShow: 3,
+        swipeToSlide: true,
+        dots: true,
+        infinite: false,
+        responsive: [
+            {
+                breakpoint: 768,
+                settings: {
+                    arrows: false,
+                    centerMode: true,
+                    centerPadding: '40px',
+                    slidesToShow: 3,
+                }
+            },
+            {
+                breakpoint: 480,
+                settings: {
+                    arrows: false,
+                    centerMode: true,
+                    centerPadding: '40px',
+                    slidesToShow: 1,
+                }
+            }
+        ]
+    });
 }
 
 $(document).ready(init_cockpit);

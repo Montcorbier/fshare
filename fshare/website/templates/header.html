@@ -1,12 +1,18 @@
 {% block header %}
-    <div class="animated fadeInLeft" id="title"><a href="{% url 'index' %}">FShare</a></div>
+    <div class="animated fadeInLeft" id="title">
+        <a href="{% url 'index' %}"></a>
+        <!-- <div id="f">F</div><div id="share">Share</div></a> -->
+        <div id="subtitle">
+            Private file sharing. Keep your data. Share your data. Be your own master.
+        </div>
+    </div>
     <script>
-        $('#title').one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function() {
+        $("a", '#title').one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function() {
             $(this).removeClass("animated");
             $(this).removeClass("pulse");
             $(this).removeClass("fadeInLeft");
         });
-        $("#title").hover(function() {
+        $("a", "#title").hover(function() {
             $(this).addClass("pulse");
             $(this).addClass("animated");
             $(this).addClass("infinite");
@@ -20,35 +26,35 @@
     <nav class="animated fadeInRight">
     {% block nav %}
         {% if user.is_authenticated %}
-            {% if title == "Cockpit" %}
-                <a href="#"><div id="help-btn">?</div></a>
-            {% endif %}
-            <a href="{% url 'myfiles' %}">
-                <div class="nav-btn {% if title == "My files" %} active {% endif %}" id="nav-myfiles">
-                    my files
+            <a href="#">
+                <div class="nav-btn" id="nav-user" data-jq-dropdown="#user-menu">
+                    {{ user.username }}
                 </div>
             </a>
             {% if is_admin %}
-                <a href="{% url 'cockpit' %}">
-                    <div class="nav-btn {% if title == "Cockpit" %}active{% endif %}" id="nav-cockpit">
+                <a href="{% url 'cockpit' %}" class="{% if title == "Cockpit" %}active{% endif %}">
+                    <div class="nav-btn" id="nav-cockpit">
                         cockpit
                     </div>
                 </a>
             {% endif %}
-            <a href="#" data-jq-dropdown="#user-menu">
-                <div class="nav-btn" id="nav-user">
-                    {{ user.username }}
+            <a href="{% url 'myfiles' %}" class="{% if title == "My files" %} active {% endif %}">
+                <div class="nav-btn" id="nav-myfiles">
+                    my files
                 </div>
             </a>
+            {% if title == "Cockpit" %}
+                <a href="#"><div id="help-btn">?</div></a>
+            {% endif %}
         {% else %}
-            <a href="{% url 'login' %}">
-                <div class="nav-btn" id="nav-login">
-                    login
-                </div>
-            </a>
             <a href="{% url 'register' %}">
                 <div class="nav-btn" id="nav-signin">
                     sign in
+                </div>
+            </a>
+            <a href="{% url 'login' %}">
+                <div class="nav-btn" id="nav-login">
+                    login
                 </div>
             </a>
         {% endif %}

@@ -14,88 +14,62 @@
         You can see this page because you are admin. Other non-admin users cannot access the cockpit.
     </div>
     <div id="pclass-management" data-intro="Generate and revoke registration keys for a specific permission class. Once generated, a key can be used for (only) one registration." data-position="right">
-        <h3>Manage registration key (<a href="{% url 'about' %}" target="blank">more about it</a>)</h3>
-        <select id="pclass-select">
-            <option value="" disabled selected>Select a permission class</option>
+        <div class="pclass-carrousel slider" id="pclass-menu">
             {% for p in perms %}
-                <option value="{{ p.name }}">{{ p.name }}</option>
+                <div class="pclass-menu-item">{{ p.name }}</div>
             {% endfor %}
-        </select>
-        {% for p in perms %}
-            <div class="pclass-container hidden" id="{{ p.name }}">
-                <div class="info">
-                    <h4>Information</h4>
-                    <span class="storage-limit">
-                        <label>
-                            Storage limit
-                        </label>
-                        {{ p.storage_limit | human_size }}o
-                    </span>
-                    <span class="storage-path">
-                        <label>Path on server</label>
-                        {{ p.base_path }}
-                    </span>
-                </div>
+        </div>
+        <div id="add-perm-btn">+</div>
+        <!-- 
+        <div class="pclass-carroussel slider">
+            {% for p in perms %}
+                <div class="pclass-key-management" id="{{ p.name }}">
+                    <h4>{{ p.name }}</h4>
+                    <div class="content">
 
-                <h4>Registration keys</a>
-                <input type="button" data-pclass="{{ p.name }}" class="reg-key-btn" value="Generate a registration key for {{ p.name }} class">
-                <h4>Keys already generated</h4>
-                <div class="console" id="reg_key_console" rows="15" cols="50">
-                    <div class="menu">
-                        <p class="active" for="unused-keys">Unused</p>
-                        <p for="distributed-keys">Distributed</p>
-                        <p for="used-keys">Used</p>
-                    </div>
-                    <div class="content" data-intro="The keys you generate will appear here. From here, you can mark a key as distributed or revoked. More info about registration keys can be find in the 'About' page." data-position="top">
-                        <div class="hidden tpl unused-key-tpl">
-                            <p>
-                                <input type="text" readonly class="key" />
-                                <span class="control hidden">
-                                    <span>mark as distributed</span>
-                                    <span>revoke</span>
-                                </span>
-                            </p>
+                        <div class="key-logo"></div>
+
+                        <div class="storage-limit">
+                            <label>
+                                Storage limit
+                            </label>
+                            {{ p.storage_limit | human_size }}o
                         </div>
 
-                        <div class="unused-keys">
+                        <div class="storage-path">
+                            <label>Path on server</label>
+                            {{ p.base_path }}
+                        </div>
+
+                        <input type="button" data-pclass="{{ p.name }}" class="reg-key-btn" value="Generate a registration key for {{ p.name }} class">
+
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Key</th>
+                                    <th>Status</th>
+                                    <th>Comment</th>
+                                    <th>Revocation</th>
+                                </tr>
+                            </thead>
                             {% for key in unused_keys %}
                                 {% if key.permission == p %}
-                                    <p>
-                                        <input type="text" readonly class="key" value={{ key.key }} />
-                                        <span class="control hidden">
-                                            <span class="mark_distrib_btn">mark as distributed</span>
-                                            <span class="revoke_key_btn">revoke</span>
-                                        </span>
-                                    </p>
+                                    <tr>
+                                        <td>
+                                            <input type="text" readonly class="key" value={{ key.key }} />
+                                        </td>
+                                        <td>Unused</td>
+                                        <td>A comment goes there</td>
+                                        <td></td>
+                                    </tr>
                                 {% endif %}
                             {% endfor %}
-                        </div>
-
-                        <div class="distributed-keys hidden">
-                            {% for key in distributed_keys %}
-                                {% if key.permission == p %}
-                                    <p>{{ key.key }} <input type="button" value="revoke" /></p>
-                                {% endif %}
-                            {% endfor %}
-                        </div>
-
-                        <div class="used-keys hidden">
-                            {% for key in used_keys %}
-                                {% if key.permission == p %}
-                                    <p>
-                                        <span class="key">
-                                            {{ key.key }}
-                                        </span>
-                                        <!-- to be removed -->
-                                        ({{ p.name }})
-                                    </p>
-                                {% endif %}
-                            {% endfor %}
-                        </div>
+                        </table>
                     </div>
                 </div>
-            </div>
-        {% endfor %}
+            {% endfor %}
+        </div>
+        -->
     </div>
     <div data-intro="Create new class of user with a given storage limit and a specific storage location on your server. Once created, you can generate registration keys for your new permission." data-position="right">
         <h3>Create a new permission class</h3>

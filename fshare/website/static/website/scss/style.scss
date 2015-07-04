@@ -1,12 +1,8 @@
 
-@import "color/purple.scss";
 @import "font.scss";
+@import "form.scss";
 
 $doc-margin: 50px;
-
-.hidden {
-    display: none;
-}
 
 body {
     position: relative;
@@ -26,61 +22,157 @@ a {
     }
 }
 
+.hidden {
+    display: none;
+}
+
+.note {
+    border-style: solid;
+    border-color: $medium-color;
+    border-width: 0px 0px 0px 3px;
+    
+    font-size: 0.8em;
+    font-style: italic;
+
+    &:before {
+        content: "Note. ";
+        font-weight: bold;
+        font-style: normal;
+    }
+
+    &:hover {
+        border-color: $light-color;
+    }
+}
+
+.chardinjs-tooltiptext {
+    font-size: 0.8em;
+    text-align: justify;
+}
+
 header {
-    $hdr-size: 50px;
+    $hdr-size: 200px;
+    $title-size: 200px;
+    $nav-size: 100px;
+
+    background-color: $medium-color;
 
     border-style: solid;
-    border-width: 0px 0px 1px 0px;
-    border-color: $medium-color;
+    border-width: 0px 0px 6px 0px;
+    border-color: $very-dark-color;
 
-    margin-left: 10px;
-    margin-right: 10px;
+    margin-bottom: 30px;
 
     height: $hdr-size;
-    padding-left: $doc-margin;
-    padding-right: $doc-margin;
-    line-height: $hdr-size;
+    width: 100%;
+
     div {
         display: inline-block;
     }
+
     #title {
-        font-size: 2em;
+        display: block;
+        padding-left: $doc-margin;
+        height: $title-size;
+        line-height: $title-size;
+        font-size: 4em;
         font-family: $title-font;
         a { 
-            color: $dark-color;
+            display: inline-block;
+            height: $title-size;
+            width: $title-size * 1.7;
+            background-image: url("../../img/logo.png");
+            background-size: auto 100%;
+            background-repeat: no-repeat;
+            color: $very-light-color;
+            div#f {
+                position: absolute; 
+                top: 10px;
+                left: 5px;
+                
+                z-index: 1;
+
+                width: 100px;
+                height: 100px;
+                background-color: white;
+                border-radius: 100px;
+                line-height: 100px;
+                text-align: center;
+
+                shape-outside: polygon(0 0, 100 0, 100 100, 30 100);
+                shape-margin: 20px;
+                clip-path: polygon(0 0, 100% 0, 100% 100%, 30% 100%);
+            }
+        }
+        #subtitle {
+            position: absolute; 
+            top: 50px;
+            color: $light-color;
+            font-family: $main-font;
+            font-size: 0.3em; 
         }
     }
+
     nav {
-        display: inline-block;
+        display: block;
         position: absolute;
-        right: $doc-margin;
-        div {
-            height: $hdr-size - 3px;
-            margin-top: 1px;
-            padding-left: 10px;
-            padding-right: 10px;
+        top: $hdr-size - $nav-size/2 + 2px;
+        right: 0px;
+        left: 0px;
+        height: $nav-size;
+        padding-right: 50px;
 
-            &.active {
-                border-style: solid;
-                border-width: 0px 0px 1px 0px;
-                border-color: $light-color;
-            }
-
-            &:hover {
-                border-style: solid;
-                border-width: 0px 0px 1px 0px;
-                border-color: $very-light-color;
-            }
-        }
-        
+        background-color: rgba(0,0,0,0);
         a {
             text-decoration: none;
             color: $medium-color;
+            display: inline-block;
+            float: right;
+            height: $nav-size - 5px;
+            width: $nav-size - 5px;
+            border-radius: $nav-size - 10px;
+            background-color: $very-light-color;
+
+            line-height: $nav-size - 5px;
+            text-align: center;
+            text-overflow: ellipsis;
+
+            margin-left: 10px;
+            margin-right: 10px;
+            text-align: center;
+                
+            border-style: solid;
+            border-width: 3px 3px 3px 3px;
+            border-color: rgba(0, 0, 0, 0);
+
+            &.active {
+                background-color: $light-color;
+            }
+
+            &:hover {
+                border-color: $very-dark-color;
+            }
+
+            div {
+                margin-top: 1px;
+                padding-left: 10px;
+                padding-right: 10px;
+
+            } 
         }
     }
 }
 
+.banner {
+    width: 100%;
+    height: 20%;
+    background-color: $medium-color;
+}
+
 #user-menu {
+    width: 300px;
+    margin-left: -40px;
+
     #storage-percent-container {
         width: 90%;
         margin: auto;
@@ -114,203 +206,19 @@ header {
         }
     }
 }
-
-.dropzone {
-    $drop-height: 150px;
-
-    width: 80%;
-    height: $drop-height;
-    margin: auto;
-    margin-top: 50px;
-
-    background-color: $very-dark-color;
-    color: $light-color;
-
-    line-height: $drop-height;
-    text-align: center;
-
-    border-radius: 5px;
-
-    &:hover, &.dz-drag-hover {
-        background-color: $dark-color;
-        color: white;
-        cursor: pointer;
-    }
-}
-
-
-#pclass-management {
-    select {
-        display: block;
-        width: 80%;
-        height: 30px;
-        margin: auto;
-        float: center;
-
-        border-color: $medium-color;
-        border-radius: 2px; 
-    }
-
-    .info {
-        &>span, &>input {
-            display: block;
-            label {
-                font-weight: bold;
-            }
-        }
-    }
-
-    .reg-key-btn {
-        display: block;
-        width: 80%; 
-        height: 30px;
-        margin: auto;
-        float: center;
-
-        background-color: white;
-
-        border-color: $medium-color;
-        border-width: 1px;
-        border-radius: 2px;
-
-        &:hover {
-            background-color: $very-light-color;
-        }
-    }
-}
-
-
-.console {
-    $csl-height: 200px;
-    $cls-menu-width: 100px;
-    $csl-control-width: 200px;
-    $csl-color: #F0F0F0;
-
-    position: relative;
-
-    width: 90%;
-    margin: auto;
-
-    .menu {
-        display: inline-block;
-        height: $csl-height;
-        width: $cls-menu-width;
-        vertical-align: top;
-
-        margin-top: 0px;
-        margin-right: 0px;
-        padding-top: 0px;
-        padding-right: 0px;
-
-        p {
-            border-style: solid;
-            border-width: 0px 0px 1px 0px;
-            border-color: $very-light-color;
-
-            padding: 0px;
-            padding-right: 10px;
-            margin-top: 0px;
-            margin-right: 0px;
-
-            font-size: 0.8em;
-            text-align: right;
-
-            cursor: pointer;
-
-            &.active {
-                border-color: $dark-color;
-                font-weight: bold;
-            }
-        }
-    }
-
-    .content {
-        display: inline-block;
-
-        border-style: solid;
-        border-width: 1px;
-        border-color: $very-dark-color;
-        border-radius: 2px;
-    
-        height: $csl-height;
-        position: absolute;
-        right: 0px;
-        left: $cls-menu-width;
-        resize: none;
-        margin-left: 0px;
-        padding-top: 5px;
-        padding-bottom: 5px;
-        padding-left: 10px;
-        padding-right: 10px;
-
-        background-color: $csl-color;
-    
-        font-size: 0.6em;
-        font-family: "PT Mono" Serif;
-            
-        overflow-y: scroll;
-    
-        &>div {
-            max-height: $csl-height;
-            width: 100%;
-
-            p {
-                margin: 0px;
-                margin-bottom: 5px;
-                height: 15px;
-                &:hover {
-                    cursor: pointer;
-                }
-                &>input {
-                    position: absolute;
-                    left: 5px;
-                    right: $csl-control-width;
-                    height: 15px;
-                    line-height: 15px;
-
-                    font-size: 0.9em;
-                    background-color: $csl-color;
-                    border-style: none;
-                    text-overflow: ellipsis;
-                }
-                .control {
-                    float: right;
-                    height: 15px;
-                    vertical-align: center;
-                    span {
-                        background-color: $very-light-color;
-                        padding: 3px;
-                        padding-left: 10px;
-                        padding-right: 10px;
-                        border-radius: 3px;
-                        &:hover {
-                            cursor: pointer;
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
-    
+ 
 section {
 
     padding: 50px;
 
-    #pclass-management {
-        .reg-key-btn {
-            &:hover {
-                cursor: pointer;
-            }
-        }
-    }
-
     &>div {
+        /*
         border-style: solid;
         border-color: $medium-color;
         border-width: 0px 0px 0px 1px;
+        */
 
-        width: 70%;
+        width: 100%;
 
         margin-bottom: 30px;
 
@@ -320,8 +228,10 @@ section {
 
         font-size: 0.9em;
         &:hover {
+            /*
             border-color: $very-light-color;
             border-width: 0px 0px 0px 1px;
+            */
         }
 
         h3 {
@@ -329,32 +239,287 @@ section {
             font-weight: bold;
             color: $dark-color;
         }
+    }
 
-        h4 {
-            &:before {
-                content: "> ";
+    .dropzone {
+        $drop-height: 150px;
+    
+        width: 80%;
+        height: $drop-height;
+        margin: auto;
+        margin-top: 50px;
+    
+        background-color: $very-dark-color;
+        color: $light-color;
+    
+        line-height: $drop-height;
+        text-align: center;
+    
+        border-radius: 5px;
+    
+        &:hover, &.dz-drag-hover {
+            background-color: $dark-color;
+            color: white;
+            cursor: pointer;
+        }
+    }
+
+    #pclass-management {
+         
+        select {
+            width: 90%;
+            margin-bottom: 30px;
+        }
+    
+        #pclass-menu {
+            /*
+            border-style: solid;
+            border-color: black;
+            border-width: 5px;
+            */
+            width: 200px;
+            margin-left: -25px;
+
+            .slick-list {
+                margin-left: 40px;
+            }
+
+            .slick-dots {
+                position: absolute;
+                top: 0px;
+                bottom: 0px;
+                width: 20px;
+            }
+
+            .pclass-menu-item {
+                max-width: 100px;
+                height: 100px;
+
+                text-align: center;
+                line-height: 100px;
+
+                /*
+                border-style: solid;
+                border-color: black;
+                border-width: 5px;
+                */
+                border-radius: 100px;
+
+                background-color: $very-light-color;
+                opacity: 0.2;
+                transform: scale(0.80);
+
+                &.slick-active {
+                    opacity: 0.5;
+                    transform: scale(0.85);
+                }
+
+                &.slick-center {
+                    opacity: 1;
+                    transform: scale(1);
+                }
+            }
+        }
+
+        #add-perm-btn {
+            height: 70px;
+            width: 70px;
+
+            text-align: center;
+            line-height: 70px;
+
+            border-radius: 70px;
+            
+            background-color: $light-color;
+
+            margin-left: 30px;
+
+            font-size: 3em;
+
+            /* TODO debug this */
+            &:hover {
+                cursor: pointer;
+                background-color: $medium-color;
+            }
+        }
+
+        .info {
+            &>span, &>input {
+                display: block;
+                label {
+                    font-weight: bold;
+                }
+            }
+        }
+    
+        .reg-key-btn {
+            width: 90%; 
+        }
+
+        div.pclass-key-management {            
+
+            padding-top: 50px;
+
+            h4 {
+                font-size: 3em;
+                color: $dark-color;
+                width: 100%;
+            }
+
+            .content {
+                
+                .storage-limit, .storage-path {
+                    width: 50%;
+                    text-align: right;
+                    font-size: 1.5em;
+                    label {
+                        display: block;
+                        width: 50%;
+                        float: left;
+                        text-align: left;
+                    }
+                }
+
+                background-color: $very-light-color;
+                opacity: 0.25;
+
+                position: relative;
+
+                width: 85%;
+                padding: 20px;
+                border-style: solid;
+                border-width: 1px;
+                border-color: black;
+
+                .key-logo {
+                    position: absolute;
+                    top: 20px;
+                    right: 20px;
+                    border-style: solid;
+                    border-width: 1px;
+                    border-color: black;
+                    height: 80px;
+                    width: 80px;
+                    background-image: url("../../img/icon/key.png");
+                    background-size: 100% 100%;
+                }
+
+                table {
+                    
+                }
+            }
+
+            &.slick-center {
+                transform: scale(1.08);
+                .content {
+                    opacity: 1;
+                }
+            }
+
+        }
+
+        .console {
+        
+            $csl-height: 200px;
+            $cls-menu-width: 100px;
+            $csl-control-width: 200px;
+            $csl-color: #F0F0F0;
+        
+            position: relative;
+        
+            width: 90%;
+            margin: auto;
+        
+            .menu {
+                display: inline-block;
+                height: $csl-height;
+                width: $cls-menu-width;
+                vertical-align: top;
+        
+                margin-top: 0px;
+                margin-right: 0px;
+                padding-top: 0px;
+                padding-right: 0px;
+        
+                p {
+                    border-style: solid;
+                    border-width: 0px 0px 1px 0px;
+                    border-color: $very-light-color;
+        
+                    padding: 0px;
+                    padding-right: 10px;
+                    margin-top: 0px;
+                    margin-right: 0px;
+        
+                    font-size: 0.8em;
+                    text-align: right;
+        
+                    cursor: pointer;
+        
+                    &.active {
+                        border-color: $dark-color;
+                        font-weight: bold;
+                    }
+                }
+            }
+        
+            .content {
+                display: inline-block;
+        
+                border-style: solid;
+                border-width: 1px;
+                border-color: $very-dark-color;
+                border-radius: 2px;
+            
+                height: $csl-height;
+                position: absolute;
+                right: 0px;
+                left: $cls-menu-width;
+                resize: none;
+                margin-left: 0px;
+                padding-top: 5px;
+                padding-bottom: 10px;
+                padding-left: 10px;
+                padding-right: 10px;
+        
+                background-color: $csl-color;
+            
+                font-size: 0.6em;
+                font-family: "PT Mono" Serif;
+                    
+                overflow-y: scroll;
+            
+                &>div {
+                    max-height: $csl-height;
+                    width: 100%;
+        
+                    p {
+                        margin: 0px;
+                        margin-bottom: 5px;
+                        height: 20px;
+                        &:hover {
+                            cursor: pointer;
+                        }
+                        .control {
+                            float: right;
+                            height: 20px;
+                            margin-bottom: 0px;
+                            span {
+                                background-color: $very-light-color;
+                                padding: 3px;
+                                padding-left: 10px;
+                                padding-right: 10px;
+                                border-radius: 3px;
+                                &:hover {
+                                    cursor: pointer;
+                                    background-color: $dark-color;
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
     }
-}
-
-.note {
-    border-style: solid;
-    border-color: $medium-color;
-    border-width: 0px 0px 0px 1px;
-    
-    font-size: 0.8em;
-    font-style: italic;
-
-    &:before {
-        content: "Note. ";
-        font-weight: bold;
-        font-style: normal;
-    }
-}
-
-.chardinjs-tooltiptext {
-    font-size: 0.8em;
-    text-align: justify;
 }
 
