@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect, HttpResponse, Http404, get_object_or_404
 from django.contrib.auth import authenticate, login
+from django.contrib.auth.hashers import check_password
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.core.exceptions import ObjectDoesNotExist
 
@@ -125,7 +126,7 @@ def download(request, fid):
             #TODO
             return HttpResponse("No PWD PROVIDED")
         # If the password is not correct, return an error
-        if pwd != f.pwd_hash: 
+        if not check_password(pwd, f.pwd_hash):
             #TODO
             return HttpResponse("WRONG PWD")
         # Set the password in context to pass it to get_file
@@ -145,6 +146,7 @@ def get_file(request, fid):
         as POST or GET parameter is checked before returning the file.
 
     """
+    # TODO check pwd !!!
     f = File.objects.get(id=fid)
     response = HttpResponse(content=open(f.path, 'rb').read())
     response['Content-Disposition'] = 'attachment; filename=%s' % f.title
