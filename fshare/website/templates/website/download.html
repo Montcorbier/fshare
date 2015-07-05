@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% load fshare_extra %}
+
+{% block content %}
+
+    <div class="file-info">
+        <p class="name"><label>File</label> <span class="value">{{ f.title }}</span></p>
+        <p class="size"><label>Size</label> <span class="value">{{ f.size | human_size }}B</span></p>
+        {% if f.description != "" %}
+            <p class="desc"><label>Description</label> <span class="value">{{ f.description }}</span></p>
+        {% endif %}
+        <p class="checksum"><label>MD5 Checksum</label> <span class="value">{{ f.checksum }}</span></p>
+    </div>
+
+    <a href="{% url 'get_file' f.id %}{% if pwd %}?pwd={{ pwd }}{% endif %}">
+        <div class="download">
+            DOWNLOAD
+        </div>
+    </a>
+
+{% endblock %}

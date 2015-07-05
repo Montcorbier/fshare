@@ -109,7 +109,8 @@ class FSUser(models.Model):
     @property
     def storage_left(self):
         # TODO : change this. Must compute available space
-        return randint(0, self.storage_limit)
+        storage_used = sum([f.size for f in File.objects.all().filter(owner=self.user)])
+        return self.storage_limit - storage_used
 
     @property
     def storage_percent(self):

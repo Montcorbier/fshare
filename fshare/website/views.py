@@ -1,10 +1,10 @@
-from django.shortcuts import render, redirect, HttpResponse, Http404
+from django.shortcuts import render, redirect, HttpResponse, Http404, get_object_or_404
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.core.exceptions import ObjectDoesNotExist
 
 from website.management.commands.generate_registration_key import Command as GenerateRegistrationKey
-from website.models import Permission, FSUser, RegistrationKey
+from website.models import Permission, FSUser, RegistrationKey, File
 from website.forms import RegisterForm, PermissionForm, UploadFileForm
 
 
@@ -50,6 +50,7 @@ def register(request):
 def about(request):
     return HttpResponse("To Do.")
 
+
 @login_required(login_url="login")
 def myfiles(request):
     """
@@ -60,6 +61,9 @@ def myfiles(request):
     ctxt = dict()
     ctxt["title"] = "My files"
     tpl = "website/myfiles.html"
+    ctxt["files"] = File.objects.all().filter(owner=request.user)
+    for f in ctxt["files"]:
+        print(f)
     return render(request, tpl, ctxt)
 
 
@@ -77,6 +81,7 @@ def upload(request):
     """
         Handle the file upload
         (first version one file handled)
+
     """
     ctxt = dict()
     ctxt["title"] = "Upload"
@@ -90,6 +95,57 @@ def upload(request):
             form.save(request.user)
         return redirect('upload')
     raise Http404
+
+
+def download(request, fid):
+    """
+        View of a file for download. If the file is protected, 
+        no information is displayed about the file until the password
+        has been entered.
+
+    """
+    ctxt = dict()
+    ctxt["title"] = "Upload"
+    tpl = "website/download.html"
+    # Get the file description
+    f = get_object_or_404(File, id=fid)
+    # If it is protected by a password
+    if f.is_private:
+        # Try to get the password from GET
+        if "pwd" in request.GET.keys():
+            pwd = request.GET["pwd"]
+        # Try to get the password from POST
+        elif "pwd" in request.POST.keys():
+            pwd = request.POST["pwd"]
+        # If no password provided, return an error
+        else:
+            #TODO
+            return HttpResponse("No PWD PROVIDED")
+        # If the password is not correct, return an error
+        if pwd != f.pwd_hash: 
+            #TODO
+            return HttpResponse("WRONG PWD")
+        # Set the password in context to pass it to get_file
+        # view through GET parameter
+        ctxt["pwd"] = pwd
+    # At this point, either the file is public or 
+    # the correct password was provided
+    # Set file meta in context
+    ctxt["f"] = f
+    return render(request, tpl, ctxt)
+    
+
+def get_file(request, fid):
+    """
+        Handle file download. @param fid is the id of the file to
+        be downloaded. If the file is protected, the password given 
+        as POST or GET parameter is checked before returning the file.
+
+    """
+    f = File.objects.get(id=fid)
+    response = HttpResponse(content=open(f.path, 'rb').read())
+    response['Content-Disposition'] = 'attachment; filename=%s' % f.title
+    return response
 
 
 @login_required(login_url="login")

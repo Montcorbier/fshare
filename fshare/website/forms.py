@@ -121,7 +121,6 @@ class PermissionForm(forms.ModelForm):
         # TODO specify error (does not exist or cannot read)
         # Check if base_path exists and is writable
         if not os.path.exists(base_path) or not os.access(base_path, os.W_OK):
-            print(base_path)
             return False
         if sub_path == "":
             return True

@@ -19,4 +19,8 @@ urlpatterns = [
     url(r'^register$', 'website.views.register', name="register"),
     url(r'^login$', django_login, name="login"),
     url(r'^logout$', django_logout, {'template_name': "registration/logout.html"}, name="logout"),
+
+    # File downloading view
+    url(r'^dl/(?P<fid>[-A-Za-z0-9_]+)$', 'website.views.download', name="download"),
+    url(r'^get/(?P<fid>[-A-Za-z0-9_]+)$', 'website.views.get_file', name="get_file"),
 ]
