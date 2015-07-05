@@ -77,18 +77,21 @@ def is_admin(user):
     return fsuser.permission.name == "admin"
 
 
+@login_required(login_url="login")
 def upload(request):
     """
         Handle the file upload
         (first version one file handled)
 
     """
-    ctxt = dict()
-    ctxt["title"] = "Upload"
+    context = {}
     tpl = "website/upload.html"
 
+    context["title"] = "Upload"
+
     if request.method == "GET":
-        return render(request, tpl, ctxt)
+        context["form"] = UploadFileForm(request.POST, request.FILES)
+        return render(request, tpl, context)
     elif request.method == "POST":
         form = UploadFileForm(request.POST, request.FILES)
         if form.is_valid(request.user):

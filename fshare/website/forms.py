@@ -4,6 +4,7 @@ import os
 from django import forms
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.forms import UserCreationForm
+from  django.contrib.auth.hashers import make_password
 
 from website.models import User, Permission, FSUser, RegistrationKey, File
 
@@ -138,8 +139,16 @@ class PermissionForm(forms.ModelForm):
         return super(PermissionForm, self).save()
 
 
-class UploadFileForm(forms.Form):
+class UploadFileForm(forms.ModelForm):
     file = forms.FileField()
+
+    class Meta:
+        model = File
+        fields = ['title', 'private_label', 'description', 'is_private', 'pwd_hash']
+        widgets = {}
+
+    def __init__(self, *args, **kwargs):
+        super(UploadFileForm, self).__init__(*args, **kwargs)
 
     def is_valid(self, user=None):
         """
@@ -166,12 +175,17 @@ class UploadFileForm(forms.Form):
 
         new_file = File(
             owner=user,
-            title="TODO",
-            private_label="TODO",
-            description="TODO",
+            title=self.cleaned_data.get('title', uploaded_file),
+            private_label=self.cleaned_data.get('private_label'),
+            description=self.cleaned_data.get('description'),
             path=filepath,
             checksum=m.hexdigest(),
             size=uploaded_file.size,
+            is_private=self.cleaned_data.get('is_private'),
         )
+
+        if new_file.is_private:
+            new_file.pwd_hash = make_password(self.cleaned_data.get('pwd_hash'))
+
         new_file.save()
         return filepath
