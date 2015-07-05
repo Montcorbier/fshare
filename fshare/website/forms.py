@@ -175,7 +175,7 @@ class UploadFileForm(forms.ModelForm):
 
         new_file = File(
             owner=user,
-            title=self.cleaned_data.get('title', uploaded_file),
+            title=self.cleaned_data.get('title') or uploaded_file,
             private_label=self.cleaned_data.get('private_label'),
             description=self.cleaned_data.get('description'),
             path=filepath,
