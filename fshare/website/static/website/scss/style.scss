@@ -51,9 +51,9 @@ a {
 }
 
 header {
-    $hdr-size: 200px;
-    $title-size: 200px;
-    $nav-size: 100px;
+    $hdr-size: 150px;
+    $title-size: 150px;
+    $nav-size: 60px;
 
     background-color: $medium-color;
 
@@ -75,7 +75,7 @@ header {
         padding-left: $doc-margin;
         height: $title-size;
         line-height: $title-size;
-        font-size: 4em;
+        font-size: 3em;
         font-family: $title-font;
         a { 
             display: inline-block;
@@ -106,7 +106,7 @@ header {
         }
         #subtitle {
             position: absolute; 
-            top: 50px;
+            top: 40px;
             color: $light-color;
             font-family: $main-font;
             font-size: 0.3em; 
@@ -124,6 +124,7 @@ header {
 
         background-color: rgba(0,0,0,0);
         a {
+            font-size: 0.6em;
             text-decoration: none;
             color: $medium-color;
             display: inline-block;
@@ -241,7 +242,7 @@ section {
         }
     }
 
-    .dropzone {
+    .dropzone, .download {
         $drop-height: 150px;
     
         width: 80%;
@@ -277,8 +278,10 @@ section {
             border-color: black;
             border-width: 5px;
             */
-            width: 200px;
+            width: 150px;
             margin-left: -25px;
+
+            font-size: 0.7em;
 
             .slick-list {
                 margin-left: 40px;
@@ -292,11 +295,11 @@ section {
             }
 
             .pclass-menu-item {
-                max-width: 100px;
-                height: 100px;
+                max-width: 70px;
+                height: 70px;
 
                 text-align: center;
-                line-height: 100px;
+                line-height: 70px;
 
                 /*
                 border-style: solid;
@@ -322,11 +325,11 @@ section {
         }
 
         #add-perm-btn {
-            height: 70px;
-            width: 70px;
+            height: 50px;
+            width: 50px;
 
             text-align: center;
-            line-height: 70px;
+            line-height: 50px;
 
             border-radius: 70px;
             
@@ -519,6 +522,47 @@ section {
                     }
                 }
             }
+        }
+    }
+
+    .file-info {
+        width: 100%;
+
+        p {
+            margin-top: 0px;
+            margin-bottom: 0px;
+
+            height: 80px;
+            line-height: 80px;
+
+            font-size: 1.2em;
+        }
+
+        label {
+            width: 30%;
+            height: 100%;
+
+            display: inline-block;
+            text-align: right;
+
+            border-style: solid;
+            border-color: $medium-color;
+            border-width: 0px 3px 0px 0px;
+
+            margin-top: 0px;
+            margin-bottom: 0px;
+            
+            padding-right: 20px;
+
+            font-weight: bold;
+        }
+
+        span.value {
+            padding-left: 20px;
+        }
+        
+        p.checksum span {
+            color: $dark-color;
         }
     }
 }
