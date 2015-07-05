@@ -1,4 +1,9 @@
 {% extends 'base.html' %}
 
+{% load fshare_extra %}
+
 {% block content %}
+    {% for file in files %}
+    <p><a href="/dl/{{ file.id }}">{{ file.path }}</a> | {{ file.size | human_size }}</p>
+    {% endfor %}
 {% endblock %}
