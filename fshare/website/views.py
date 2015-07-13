@@ -32,7 +32,7 @@ def register(request):
     ctxt["title"] = "Registration"
     tpl = "registration/register.html"
     # Get registration form from POST values
-    reg_form = RegisterForm(request.POST or None)
+    reg_form = RegisterForm(request.POST or None, label_suffix='')
     # Check the form validity
     if reg_form.is_valid():
         # Register the new user
@@ -91,10 +91,10 @@ def upload(request):
     context["title"] = "Upload"
 
     if request.method == "GET":
-        context["form"] = UploadFileForm(request.POST, request.FILES)
+        context["form"] = UploadFileForm(request.POST, request.FILES, label_suffix='')
         return render(request, tpl, context)
     elif request.method == "POST":
-        form = UploadFileForm(request.POST, request.FILES)
+        form = UploadFileForm(request.POST, request.FILES, label_suffix='')
         if form.is_valid(request.user):
             form.save(request.user)
         return redirect('upload')
@@ -167,7 +167,7 @@ def cockpit(request):
     tpl = "website/cockpit.html"
     # Get permission form if any
     ctxt["perms"] = [p for p in Permission.objects.all()]
-    perm_form = PermissionForm(request.POST or None)
+    perm_form = PermissionForm(request.POST or None, label_suffix='')
     # Check the permission form
     if perm_form.is_valid():
         # If valid, create a new permission entry

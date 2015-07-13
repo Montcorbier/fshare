@@ -7,6 +7,7 @@ from django.contrib.auth.forms import UserCreationForm
 from  django.contrib.auth.hashers import make_password
 
 from website.models import User, Permission, FSUser, RegistrationKey, File
+from website.renders import CustomRadioRenderer
 
 
 class RegisterForm(UserCreationForm):
@@ -15,20 +16,28 @@ class RegisterForm(UserCreationForm):
         model = User
         fields = ['username', 'password1', 'password2', 'email']
         widgets = {
-                    'username': forms.TextInput(attrs={'placeholder': "username", 'class': "form-control"}),
-                    'email': forms.TextInput(attrs={'type': 'email', 'placeholder': "@email (not required)", 'class': "form-control"}),
+                    'username': forms.TextInput(attrs={'placeholder': "a-z, A-Z, 0-9 and @/./+/-/_", 'class': "form-control"}),
+                    'email': forms.TextInput(attrs={'type': 'email', 'placeholder': "not required", 'class': "form-control"}),
+                }
+        labels = {
+                    'username': "Username",
+                    'password1': "Password",
+                    'password2': "Password (again)",
+                    'email': "@email",
                 }
 
     def __init__(self, *args, **kwargs):
-        self.base_fields['password1'].widget = forms.TextInput(attrs={'type': 'password', 'placeholder': "password", 'class': "form-control"})
-        self.base_fields['password2'].widget = forms.TextInput(attrs={'type': 'password', 'placeholder': "password (again)", 'class': "form-control"})
+        self.base_fields['password1'].widget = forms.TextInput(attrs={'type': 'password', 'placeholder': "e.g. hunter2", 'class': "form-control"})
+        self.base_fields['password1'].label = "Password"
+        self.base_fields['password2'].widget = forms.TextInput(attrs={'type': 'password', 'placeholder': "e.g. hunter2", 'class': "form-control"})
+        self.base_fields['password2'].label = "Password (again)"
         super(RegisterForm, self).__init__(*args, **kwargs)
         # Add field for registration key
         self.fields['registration_key'] = forms.CharField(
                                                             label="Registration Key", 
                                                             widget=forms.TextInput(attrs={
                                                                 'type': "text",
-                                                                'placeholder': "registration key (required)",
+                                                                'placeholder': "required",
                                                                 'class': "form-control",
                                                                                     })
                                                         )
@@ -145,7 +154,19 @@ class UploadFileForm(forms.ModelForm):
     class Meta:
         model = File
         fields = ['title', 'private_label', 'description', 'is_private', 'pwd_hash']
-        widgets = {}
+        widgets = {
+                    'title': forms.TextInput(attrs={'placeholder': "e.g. \"Tizard document\"", 'class': "form-control"}),
+                    'private_label': forms.TextInput(attrs={'placeholder': "e.g. \"Top secret text file for the General\""}),
+                    'description': forms.TextInput(attrs={'placeholder': "e.g. \"Just some reports\"", 'class': "form-control"}),
+                    'is_private': forms.RadioSelect(attrs={'id': "file-public-switch", 'class': "radio"}, choices=[('private', 'Yep'), ('public', 'Nope, don\'t care')], renderer=CustomRadioRenderer),
+                    'pwd_hash': forms.TextInput(attrs={'placeholder': "e.g. \"topsecret\", \"9af66498ed73cc90ae\"", 'class': "form-control"}),
+                }
+        labels = {
+                    'title': "Public title",
+                    'private_label': "Private title",
+                    'description': "Description",
+                    'is_private': "Protected by a key",
+                }
 
     def __init__(self, *args, **kwargs):
         super(UploadFileForm, self).__init__(*args, **kwargs)
@@ -189,3 +210,4 @@ class UploadFileForm(forms.ModelForm):
 
         new_file.save()
         return filepath
+

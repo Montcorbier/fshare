@@ -52,7 +52,7 @@ class File(RandomPrimaryIdModel):
     # Is the file protected with a password/key ?
     is_private = models.BooleanField(default=False)
     # hash of the password
-    pwd_hash = models.CharField(max_length=512, blank=True, null=True)
+    pwd_hash = models.CharField(max_length=512, blank=True, null=True, verbose_name="Key")
 
 
 class Permission(models.Model):

@@ -3,9 +3,11 @@
 {% block title %}Login{% endblock %}
 
 {% block content %}
-    <form action="{% url "login" %}" method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <input type="submit" />
-    </form>
+    <div>
+        <form action="{% url "login" %}" method="post" class="basic-form" id="login-form">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <input type="submit" />
+        </form>
+    </div>
 {% endblock %}

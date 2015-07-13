@@ -3,12 +3,14 @@
 {% block title %}Upload{% endblock %}
 
 {% block content %}
-    <form action="/upload" method="POST" enctype="multipart/form-data">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <input type="submit" value="Go"/>
-    </form>
-    <form action="/upload" class="dropzone" id="dropzone">
-        {% csrf_token %}
-    </form>
+    <div>
+        <form action="/upload" method="POST" enctype="multipart/form-data" class="upload-info">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <input type="submit" value="Go"/>
+        </form>
+        <form action="/upload" class="dropzone" id="dropzone">
+            {% csrf_token %}
+        </form>
+    </div>
 {% endblock %}

@@ -1,5 +1,5 @@
 
-@import "font.scss";
+@import "settings.scss";
 @import "form.scss";
 
 $doc-margin: 50px;
@@ -28,8 +28,8 @@ a {
 
 .note {
     border-style: solid;
-    border-color: $medium-color;
-    border-width: 0px 0px 0px 3px;
+    border-color: $border-color;
+    border-width: 0px 0px 0px 1px;
     
     font-size: 0.8em;
     font-style: italic;
@@ -51,40 +51,45 @@ a {
 }
 
 header {
-    $hdr-size: 150px;
-    $title-size: 150px;
-    $nav-size: 60px;
+    $hdr-size: 50px;
+    $title-size: $hdr-size;
+    $nav-size: $hdr-size;
 
-    background-color: $medium-color;
+    background-color: $dark-color;
+    color: white;
 
     border-style: solid;
-    border-width: 0px 0px 6px 0px;
-    border-color: $very-dark-color;
-
-    margin-bottom: 30px;
+    border-width: 0px 0px 1px 0px;
+    border-color: $border-color;
 
     height: $hdr-size;
     width: 100%;
+
+    margin: auto;
+    margin-bottom: 30px;
 
     div {
         display: inline-block;
     }
 
     #title {
-        display: block;
+        display: inline-block;
         padding-left: $doc-margin;
         height: $title-size;
         line-height: $title-size;
-        font-size: 3em;
+        font-size: 1.7em;
         font-family: $title-font;
         a { 
+            color: white;
             display: inline-block;
             height: $title-size;
             width: $title-size * 1.7;
+            /*
             background-image: url("../../img/logo.png");
             background-size: auto 100%;
             background-repeat: no-repeat;
-            color: $very-light-color;
+            */
+            /*
             div#f {
                 position: absolute; 
                 top: 10px;
@@ -103,36 +108,32 @@ header {
                 shape-margin: 20px;
                 clip-path: polygon(0 0, 100% 0, 100% 100%, 30% 100%);
             }
+            */
         }
         #subtitle {
-            position: absolute; 
-            top: 40px;
-            color: $light-color;
             font-family: $main-font;
             font-size: 0.3em; 
+            color: $very-light-color;
         }
     }
 
     nav {
-        display: block;
-        position: absolute;
-        top: $hdr-size - $nav-size/2 + 2px;
-        right: 0px;
-        left: 0px;
+        $nav-internal-padding: 2px;
+        display: inline-block;
+        float: right;
         height: $nav-size;
         padding-right: 50px;
+        padding-top: $nav-internal-padding;
+        padding-bottom: $nav-internal-padding;
 
         background-color: rgba(0,0,0,0);
         a {
-            font-size: 0.6em;
+            color: white;
+            font-size: 0.8em;
             text-decoration: none;
-            color: $medium-color;
             display: inline-block;
             float: right;
-            height: $nav-size - 5px;
-            width: $nav-size - 5px;
-            border-radius: $nav-size - 10px;
-            background-color: $very-light-color;
+            height: $nav-size - 2 * $nav-internal-padding;
 
             line-height: $nav-size - 5px;
             text-align: center;
@@ -143,15 +144,18 @@ header {
             text-align: center;
                 
             border-style: solid;
-            border-width: 3px 3px 3px 3px;
+            border-width: 0px 0px 1px 0px;
             border-color: rgba(0, 0, 0, 0);
 
             &.active {
-                background-color: $light-color;
+                border-color: $light-color;
+                border-width: 0px 0px 1px 0px;
+
             }
 
             &:hover {
-                border-color: $very-dark-color;
+                border-color: $very-light-color;
+                color: $very-light-color;
             }
 
             div {
@@ -250,18 +254,33 @@ section {
         margin: auto;
         margin-top: 50px;
     
-        background-color: $very-dark-color;
-        color: $light-color;
+        &.download {
+            background-color: $dark-color;
+            color: white;
+        }
+
+        &.dropzone { 
+            color: $dark-color;
+        }
     
         line-height: $drop-height;
         text-align: center;
     
+        border-style: solid;
+        border-color: $border-color;
+        border-width: 1px; 
         border-radius: 5px;
     
-        &:hover, &.dz-drag-hover {
-            background-color: $dark-color;
-            color: white;
+        &:hover {
             cursor: pointer;
+            &.dropzone {
+                background-color: $dark-color;
+                color: white;
+            }
+            &.download {
+                color: $dark-color;
+                background-color: white;
+            }
         }
     }
 
@@ -301,14 +320,11 @@ section {
                 text-align: center;
                 line-height: 70px;
 
-                /*
                 border-style: solid;
-                border-color: black;
-                border-width: 5px;
-                */
+                border-color: $border-color;
+                border-width: 1px;
                 border-radius: 100px;
 
-                background-color: $very-light-color;
                 opacity: 0.2;
                 transform: scale(0.80);
 
@@ -325,19 +341,23 @@ section {
         }
 
         #add-perm-btn {
-            height: 50px;
-            width: 50px;
+            $add-btn-size: 30px;
+            height: $add-btn-size;
+            width: $add-btn-size;
 
             text-align: center;
-            line-height: 50px;
+            line-height: $add-btn-size;
 
+            border-width: 1px;
+            border-style: solid;
+            border-color: $border-color;
             border-radius: 70px;
             
-            background-color: $light-color;
+            background-color: white; //$light-color;
 
-            margin-left: 30px;
+            margin-left: 35px;
 
-            font-size: 3em;
+            font-size: 1.8em;
 
             /* TODO debug this */
             &:hover {
@@ -525,20 +545,33 @@ section {
         }
     }
 
-    .file-info {
+    .file-info, .upload-info, .basic-form  {
         width: 100%;
 
         p {
             margin-top: 0px;
             margin-bottom: 0px;
 
-            height: 80px;
-            line-height: 80px;
-
-            font-size: 1.2em;
+            height: 50px;
+            line-height: 50px;
+    
+            .radio {
+                display: inline-block;
+                position: relative;
+                height: 50px;
+                & > label {
+                    display: inline-block;
+                    &#lbl_is_private_0 {
+                        float: left;
+                    }
+                    &#lbl_is_private_1 {
+                        float: right;
+                    }
+                }
+            }
         }
 
-        label {
+        p > label {
             width: 30%;
             height: 100%;
 
@@ -546,8 +579,8 @@ section {
             text-align: right;
 
             border-style: solid;
-            border-color: $medium-color;
-            border-width: 0px 3px 0px 0px;
+            border-width: 0px 1px 0px 0px;
+            border-color: $border-color;
 
             margin-top: 0px;
             margin-bottom: 0px;
@@ -555,15 +588,43 @@ section {
             padding-right: 20px;
 
             font-weight: bold;
+
+            &[for=file-public-switch_0] {
+                float: left;
+            }
         }
 
-        span.value {
-            padding-left: 20px;
+        span.value, input, .radio {
+            margin-left: 20px;
+            width: 300px;
         }
         
         p.checksum span {
             color: $dark-color;
+            &:hover {
+                color: $light-color;
+                cursor: pointer;
+            }
+        }
+    
+        .helptext, .errorlist {
+            display: none;
         }
     }
 }
 
+#login-form, #reg-form {
+    width: 500px;
+    margin-left: 10%;
+    label {
+        width: 200px;
+    }
+    input {
+        width: 200px;
+        &[type=submit] {
+            width: 100%;
+            margin: auto;
+            margin-top: 40px;
+        }
+    }
+}
