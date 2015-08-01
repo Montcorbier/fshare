@@ -160,6 +160,22 @@ def download(request, fid):
     return render(request, tpl, ctxt)
     
 
+@login_required(login_url="login")
+def delete(request, fid):
+    """
+        Asynchronously delete a file.
+        This view performs the permission verifications.
+
+    """
+    # Get the file description
+    f = get_object_or_404(File, id=fid)
+    if f.owner != request.user:
+        return HttpResponse("KO")
+    f.delete()
+    # Response 
+    return HttpResponse("OK")
+
+
 def get_file(request, fid):
     """
         Handle file download. @param fid is the id of the file to

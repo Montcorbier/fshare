@@ -1,9 +1,14 @@
 {% extends 'base.html' %}
 
+{% block additional_scripts %}
+    {% load staticfiles %}
+     <script type="application/javascript" src="{% static 'website/js/src/myfiles.js' %}"></script>
+{% endblock %}
+
 {% load fshare_extra %}
 
 {% block content %}
     {% for file in files %}
-    <p><a href="/dl/{{ file.id }}">{{ file.path }}</a> | {{ file.size | human_size }}</p>
+    <p id="file-{{ file.id }}"><a href="/dl/{{ file.id }}">{{ file.path }}</a> | {{ file.size | human_size }} | <input type="button" class="delete-btn" data-href="{% url 'delete' file.id %}" data-csrf="{% csrf_token %}" data-fid="{{ file.id }}" value="delete"></p>
     {% endfor %}
 {% endblock %}

@@ -23,4 +23,6 @@ urlpatterns = [
     # File downloading view
     url(r'^dl/(?P<fid>[-A-Za-z0-9_]+)$', 'website.views.download', name="download"),
     url(r'^get/(?P<fid>[-A-Za-z0-9_]+)$', 'website.views.get_file', name="get_file"),
+    # File deleting view
+    url(r'^rm/(?P<fid>[-A-Za-z0-9_]+)$', 'website.views.delete', name="delete"),
 ]
