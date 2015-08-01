@@ -1,0 +1,35 @@
+
+@import "settings.scss";
+@import "form.scss";
+
+html, body {
+    background-color: $dark-color;
+    text-align: center;
+    font-family: $main-font;
+}
+
+h2 {
+    margin-top: 200px;
+    color: white;
+    text-transform: uppercase;
+    font-size: 2em;
+    margin-bottom: 50px;
+}
+
+input[type=text] {
+    background-color: $dark-color;
+    display: block;
+    margin: auto;
+    border-color: white;
+    margin-bottom: 50px;
+    margin-top: 10px;
+    width: 300px;
+    &:focus {
+        border-color: black;
+    }
+}
+
+input[type=submit] {
+    width: 50%;
+    border-color: white;
+}

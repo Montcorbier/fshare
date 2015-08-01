@@ -42,17 +42,19 @@ input[type=text], input[type=password], input[type=email] {
 }
 
 input[type=text][readonly] {
-    height: 20px;
-    line-height: 15px;
 
-    font-size: 0.9em;
-    border-width: 1px;
     text-overflow: ellipsis;
 
+/*
+    height: 20px;
+    line-height: 15px;
+    font-size: 0.9em;
+    border-width: 1px;
     &:hover {
         background-color: white;
         border-color: $medium-color;
     }
+*/
 }
 
 textarea {

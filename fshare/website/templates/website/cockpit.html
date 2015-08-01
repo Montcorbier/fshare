@@ -22,26 +22,32 @@
         <div id="add-perm-btn">+</div>
         <!-- 
         <div class="pclass-carroussel slider">
+        -->
             {% for p in perms %}
-                <div class="pclass-key-management" id="{{ p.name }}">
-                    <h4>{{ p.name }}</h4>
+            <div class="pclass-key-management {% if p.name != "admin" %}hidden{% endif %}" id="{{ p.name }}">
                     <div class="content">
+                        <div class="info">
+                            <p class="perm-name">
+                                <label>
+                                    Permission name
+                                </label>
+                                <span class="value">{{ p.name }}</span>
+                            </p>
+                            <p class="storage-limit">
+                                <label>
+                                    Storage limit
+                                </label>
+                                <span class="value">{{ p.storage_limit | human_size }}B</span>
+                            </p>
+                            <p class="storage-path">
+                                <label>Path on server</label>
+                                <span class="value">{{ p.base_path }}</span>
+                            </p>
 
-                        <div class="key-logo"></div>
-
-                        <div class="storage-limit">
-                            <label>
-                                Storage limit
-                            </label>
-                            {{ p.storage_limit | human_size }}o
+                            <input type="button" data-pclass="{{ p.name }}" class="reg-key-btn" value="Generate a registration key for {{ p.name }} class">
                         </div>
 
-                        <div class="storage-path">
-                            <label>Path on server</label>
-                            {{ p.base_path }}
-                        </div>
 
-                        <input type="button" data-pclass="{{ p.name }}" class="reg-key-btn" value="Generate a registration key for {{ p.name }} class">
 
                         <table>
                             <thead>
@@ -68,6 +74,7 @@
                     </div>
                 </div>
             {% endfor %}
+        <!-- 
         </div>
         -->
     </div>

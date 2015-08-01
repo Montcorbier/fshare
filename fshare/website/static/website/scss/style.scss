@@ -12,6 +12,13 @@ body {
     margin: auto;
     height: 100%;
     font-family: $main-font;
+
+    &.colored {
+        background-color: $dark-color;
+        nav {
+            display: none;
+        }
+    }
 }
 
 a {
@@ -254,9 +261,15 @@ section {
         margin: auto;
         margin-top: 50px;
     
+        border-style: solid;
+        border-color: $border-color;
+        border-width: 1px; 
+        border-radius: 5px;
+    
         &.download {
             background-color: $dark-color;
             color: white;
+            border-color: white;
         }
 
         &.dropzone { 
@@ -265,11 +278,6 @@ section {
     
         line-height: $drop-height;
         text-align: center;
-    
-        border-style: solid;
-        border-color: $border-color;
-        border-width: 1px; 
-        border-radius: 5px;
     
         &:hover {
             cursor: pointer;
@@ -308,22 +316,23 @@ section {
 
             .slick-dots {
                 position: absolute;
-                top: 0px;
-                bottom: 0px;
+                top: -20px;
                 width: 20px;
             }
 
             .pclass-menu-item {
                 max-width: 70px;
-                height: 70px;
+                height: 30px;
 
                 text-align: center;
-                line-height: 70px;
+                line-height: 30px;
 
+                /*
                 border-style: solid;
                 border-color: $border-color;
                 border-width: 1px;
                 border-radius: 100px;
+                */
 
                 opacity: 0.2;
                 transform: scale(0.80);
@@ -353,17 +362,16 @@ section {
             border-color: $border-color;
             border-radius: 70px;
             
-            background-color: white; //$light-color;
+            background-color: white; 
 
             margin-left: 35px;
 
             font-size: 1.8em;
+        }
 
-            /* TODO debug this */
-            &:hover {
-                cursor: pointer;
-                background-color: $medium-color;
-            }
+        #add-perm-btn:hover {
+            cursor: pointer;
+            background-color: $medium-color;
         }
 
         .info {
@@ -382,15 +390,15 @@ section {
         div.pclass-key-management {            
 
             padding-top: 50px;
-
-            h4 {
-                font-size: 3em;
-                color: $dark-color;
-                width: 100%;
-            }
+            position: absolute;
+            left: 250px;
+            top: 100px;
+            right: 100px;
+            bottom: 0px;
 
             .content {
-                
+
+                /*
                 .storage-limit, .storage-path {
                     width: 50%;
                     text-align: right;
@@ -426,9 +434,16 @@ section {
                     background-image: url("../../img/icon/key.png");
                     background-size: 100% 100%;
                 }
-
+                */
                 table {
-                    
+                    width: 100%;   
+                    text-align: center;
+                    input {
+                        width: 80%;
+                        text-align: center;
+                        font-family: "PT Mono";
+                        font-weight: 0.1em;
+                    }
                 }
             }
 
@@ -545,7 +560,7 @@ section {
         }
     }
 
-    .file-info, .upload-info, .basic-form  {
+    .file-info, .upload-info, .basic-form, .info  {
         width: 100%;
 
         p {
@@ -594,21 +609,27 @@ section {
             }
         }
 
+        &.file-info p > label {
+            border-color: white;
+        }
+
         span.value, input, .radio {
             margin-left: 20px;
             width: 300px;
         }
         
         p.checksum span {
-            color: $dark-color;
-            &:hover {
-                color: $light-color;
-                cursor: pointer;
-            }
+            // color: $light-color;
         }
     
         .helptext, .errorlist {
             display: none;
+        }
+
+        input[type=button], input[type=submit] {
+            width: 60%;
+            margin: auto;
+            margin-top: 30px;
         }
     }
 }

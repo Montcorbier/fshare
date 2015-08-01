@@ -3,6 +3,7 @@ from django.contrib.auth import authenticate, login
 from django.contrib.auth.hashers import check_password
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.core.exceptions import ObjectDoesNotExist
+from django.core.urlresolvers import reverse
 
 from website.management.commands.generate_registration_key import Command as GenerateRegistrationKey
 from website.models import Permission, FSUser, RegistrationKey, File
@@ -78,6 +79,37 @@ def is_admin(user):
     return fsuser.permission.name == "admin"
 
 
+def check_pwd(request, fid, target):
+    """
+        Check if the file is protected by a password.
+        If yes, check the password and redirect 
+        to the password template if wrong.
+
+    """
+    # Get the file description
+    f = get_object_or_404(File, id=fid)
+    # If it is protected by a password
+    if f.is_private:
+        # Try to get the password from GET
+        if "pwd" in request.GET.keys():
+            pwd = request.GET["pwd"]
+        # Try to get the password from POST
+        elif "pwd" in request.POST.keys():
+            pwd = request.POST["pwd"]
+        # If no password provided, return password view
+        else:
+            ctxt = dict()
+            ctxt["target"] = target
+            return (False, render(request, "website/enter_pwd.html", ctxt))
+        # If the password is not correct, return an error
+        if not check_password(pwd, f.pwd_hash):
+            ctxt = dict()
+            ctxt["target"] = reverse('download', kwargs={ 'fid': fid})
+            ctxt["wrong_pwd"] = True
+            return (False, render(request, "website/enter_pwd.html", ctxt))
+        return (True, pwd)
+    return (True, "")
+
 @login_required(login_url="login")
 def upload(request):
     """
@@ -111,29 +143,18 @@ def download(request, fid):
     ctxt = dict()
     ctxt["title"] = "Upload"
     tpl = "website/download.html"
+    # Check password
+    ok, val = check_pwd(request, fid, reverse('download', kwargs={ 'fid': fid}))
+    if not ok:
+        return val
     # Get the file description
     f = get_object_or_404(File, id=fid)
-    # If it is protected by a password
-    if f.is_private:
-        # Try to get the password from GET
-        if "pwd" in request.GET.keys():
-            pwd = request.GET["pwd"]
-        # Try to get the password from POST
-        elif "pwd" in request.POST.keys():
-            pwd = request.POST["pwd"]
-        # If no password provided, return an error
-        else:
-            #TODO
-            return HttpResponse("No PWD PROVIDED")
-        # If the password is not correct, return an error
-        if not check_password(pwd, f.pwd_hash):
-            #TODO
-            return HttpResponse("WRONG PWD")
-        # Set the password in context to pass it to get_file
-        # view through GET parameter
-        ctxt["pwd"] = pwd
     # At this point, either the file is public or 
     # the correct password was provided
+    if f.is_private:
+        # Set the password in context to pass it to get_file
+        # view through GET parameter
+        ctxt["pwd"] = val
     # Set file meta in context
     ctxt["f"] = f
     return render(request, tpl, ctxt)
@@ -146,8 +167,13 @@ def get_file(request, fid):
         as POST or GET parameter is checked before returning the file.
 
     """
-    # TODO check pwd !!!
+    # Check password
+    ok, val = check_pwd(request, fid, reverse('get_file', kwargs={ 'fid': fid}))
+    if not ok:
+        return val
+    # Get file description
     f = File.objects.get(id=fid)
+    # Send file
     response = HttpResponse(content=open(f.path, 'rb').read())
     response['Content-Disposition'] = 'attachment; filename=%s' % f.title
     return response

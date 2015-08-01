@@ -23,10 +23,12 @@
         {% block additional_scripts %}
         {% endblock %}
     </head>
-    <body>
+    <body class="{% block bodyclass %}{% endblock %}">
+        {% block panel %}
         <header>
             {% include "header.html" %}
         </header>
+        {% endblock %}
 
         <section class="animated fadeInUp">
         {% block content %}{% endblock %}

@@ -1,0 +1,20 @@
+
+<html>
+    <head>
+        <title>FShare - {% block title %}{{ title }}{% endblock %}</title>
+        {% load staticfiles %}
+        <link type="text/css" rel="stylesheet" href="{% static 'website/generated/css/pwd.css' %}" />
+    </head>
+    <body>
+        <h2>File protected</h2>
+        <form method="post" action="{{ target }}">
+            {% csrf_token %}
+            {% if wrong_pwd %}
+                <div class="info">Password is incorrect.</div>
+            {% endif %}
+            <label>Enter password to continue:</label>
+            <input type="text" name="pwd"/>
+            <input type="submit" value="Go">
+        </form>
+    </body>
+</html>
