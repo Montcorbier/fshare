@@ -189,6 +189,9 @@ def get_file(request, fid):
         return val
     # Get file description
     f = File.objects.get(id=fid)
+    # Increase number of downloads
+    f.nb_dl += 1
+    f.save()
     # Send file
     response = HttpResponse(content=open(f.path, 'rb').read())
     response['Content-Disposition'] = 'attachment; filename=%s' % f.title
