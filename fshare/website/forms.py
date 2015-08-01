@@ -149,7 +149,7 @@ class PermissionForm(forms.ModelForm):
 
 
 class UploadFileForm(forms.ModelForm):
-    file = forms.FileField()
+    file = forms.FileField(widget=forms.FileInput(attrs={'class': 'superDropzone'}), label='')
 
     class Meta:
         model = File
@@ -160,13 +160,13 @@ class UploadFileForm(forms.ModelForm):
                     'description': forms.TextInput(attrs={'placeholder': "e.g. \"Just some reports\"", 'class': "form-control"}),
                     'is_private': forms.RadioSelect(attrs={'id': "file-public-switch", 'class': "radio"}, choices=[('private', 'Yep'), ('public', 'Nope, don\'t care')], renderer=CustomRadioRenderer),
                     'pwd_hash': forms.TextInput(attrs={'placeholder': "e.g. \"topsecret\", \"9af66498ed73cc90ae\"", 'class': "form-control"}),
-                }
+                    }
         labels = {
                     'title': "Public title",
                     'private_label': "Private title",
                     'description': "Description",
                     'is_private': "Protected by a key",
-                }
+                    }
 
     def __init__(self, *args, **kwargs):
         super(UploadFileForm, self).__init__(*args, **kwargs)

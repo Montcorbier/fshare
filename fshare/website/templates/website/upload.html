@@ -4,13 +4,13 @@
 
 {% block content %}
     <div>
-        <form action="/upload" method="POST" enctype="multipart/form-data" class="upload-info">
+        <form id="upload-form" action="{% url "upload" %}" method="POST" enctype="multipart/form-data" class="upload-info" data-size="{% url "size_available" %}">
             {% csrf_token %}
             {{ form.as_p }}
-            <input type="submit" value="Go"/>
-        </form>
-        <form action="/upload" class="dropzone" id="dropzone">
-            {% csrf_token %}
+            <div id="dropzone" class="dropzone" action="{% url "upload" %}">
+                <div class="dz-message">Please drop your file here</div>
+            </div>
+            <div id="upload-progression"></div>
         </form>
     </div>
 {% endblock %}

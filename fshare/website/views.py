@@ -315,3 +315,7 @@ def revoke_key(request):
     # Send OK code
     return HttpResponse("OK")
 
+
+@login_required
+def size_available(request):
+    return HttpResponse(FSUser.objects.get(user=request.user).storage_left)

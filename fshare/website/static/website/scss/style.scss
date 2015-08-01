@@ -253,14 +253,18 @@ section {
         }
     }
 
+    /* Hack to hide file zone */
+    .superDropzone, label[for="id_file"] {
+        display: none;
+    }
+
     .dropzone, .download {
         $drop-height: 150px;
     
         width: 80%;
         height: $drop-height;
         margin: auto;
-        margin-top: 50px;
-    
+
         border-style: solid;
         border-color: $border-color;
         border-width: 1px; 

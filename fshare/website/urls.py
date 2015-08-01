@@ -13,6 +13,7 @@ urlpatterns = [
     url(r'^generate_registration_key$', 'website.views.generate_registration_key', name="generate_registration_key"),
     url(r'^mark_key_distributed$', 'website.views.mark_key_distributed', name="mark_key_distributed"),
     url(r'^revoke_key$', 'website.views.revoke_key', name="revoke_key"),
+    url(r'^size_available$', 'website.views.size_available', name="size_available"),
 
 
     # Authentication views
