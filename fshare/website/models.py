@@ -99,8 +99,7 @@ class FSUser(models.Model):
             Check if a user can upload a file
 
         """
-        # TODO: implements this method
-        return True
+        return (self.storage_left - size) > 0
 
     @property
     def storage_limit(self):
@@ -108,7 +107,6 @@ class FSUser(models.Model):
 
     @property
     def storage_left(self):
-        # TODO : change this. Must compute available space
         storage_used = sum([f.size for f in File.objects.all().filter(owner=self.user)])
         return self.storage_limit - storage_used
 
