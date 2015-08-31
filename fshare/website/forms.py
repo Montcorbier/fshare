@@ -2,13 +2,13 @@ import hashlib
 import os
 
 from django import forms
+from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.forms import UserCreationForm
 from  django.contrib.auth.hashers import make_password
 
 from website.models import User, Permission, FSUser, RegistrationKey, File
 from website.renders import CustomRadioRenderer
-from fshare.settings.base import FILE_MAX_SIZE_ANONYMOUS, UPLOAD_DIRECTORY_ANONYMOUS
 from website.expiration import compute_expiration_date
 
 
@@ -188,13 +188,13 @@ class UploadFileForm(forms.ModelForm):
         if not super(UploadFileForm, self).is_valid():
             return False
         if user.is_anonymous():
-            return self.cleaned_data.get('file').size <= FILE_MAX_SIZE_ANONYMOUS
+            return self.cleaned_data.get('file').size <= settings.FILE_MAX_SIZE_ANONYMOUS
         else:
             return user.fshare_user.can_upload(self.cleaned_data.get('file').size)
 
     def save(self, user):
         if user.is_anonymous():
-            folder = UPLOAD_DIRECTORY_ANONYMOUS
+            folder = settings.UPLOAD_DIRECTORY_ANONYMOUS
         else:
             folder = os.path.join(user.fshare_user.permission.base_path, user.username)
         if not os.path.exists(folder):

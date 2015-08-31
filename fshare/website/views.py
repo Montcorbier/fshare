@@ -4,8 +4,8 @@ from django.contrib.auth.hashers import check_password
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse
+from django.conf import settings
 
-from fshare.settings.base import FILE_MAX_SIZE_ANONYMOUS
 from website.management.commands.generate_registration_key import Command as GenerateRegistrationKey
 from website.models import Permission, FSUser, RegistrationKey, File
 from website.forms import RegisterForm, PermissionForm, UploadFileForm
@@ -326,7 +326,7 @@ def revoke_key(request):
 
 def size_available(request):
     if request.user.is_anonymous():
-        return HttpResponse(FILE_MAX_SIZE_ANONYMOUS)
+        return HttpResponse(settings.FILE_MAX_SIZE_ANONYMOUS)
     else:
         return HttpResponse(FSUser.objects.get(user=request.user).storage_left)
 

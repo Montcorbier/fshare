@@ -93,7 +93,3 @@ STATIC_URL = '/static/'
 
 LOGIN_REDIRECT_URL = 'myfiles'
 
-MEDIA_ROOT = '/tmp/'
-
-FILE_MAX_SIZE_ANONYMOUS = 100*2**20 # 200Mo
-UPLOAD_DIRECTORY_ANONYMOUS = "/tmp/fshare/"
