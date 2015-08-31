@@ -1,49 +1,79 @@
 {% extends 'base.html' %}
 
+{% load staticfiles %}
+
+{% block additional_style %}
+    <link type="text/css" rel="stylesheet" href="{% static 'website/css/lib/jquery.modal.css' %}" />    
+    <link type="text/css" rel="stylesheet" href="{% static 'website/css/lib/glyphicons.min.css' %}" />    
+{% endblock %}
+
 {% block additional_scripts %}
-    {% load staticfiles %}
      <script type="application/javascript" src="{% static 'website/js/src/myfiles.js' %}"></script>
+     <script type="application/javascript" src="{% static 'website/js/lib/jquery.modal.js' %}"></script>
 {% endblock %}
 
 {% load fshare_extra %}
 
 {% block content %}
-    <table>
+    <table id="myfiles">
         <thead>
             <tr>
+                <td class="small"></td>
                 <td>file</td>
+                <td>private label</td>
                 <td>description</td>
-                <td>public name</td>
-                <td>size</td>
-                <td>#dl</td>
-                <td></td>
-                <td></td>
-                <td></td>
+                <td class="small">size</td>
+                <td class="small">#dl</td>
+                <td class="vsmall"></td>
+                <td class="vsmall"></td>
             </tr>
         </thead>
         <tbody>
             {% for file in files %}
                 <tr id="file-{{ file.id }}">
-                    <td>
-                        <a href="/dl/{{ file.id }}">>{{ file.private_label }}<</a>
+                    <td class="small">
+                        {% if file.is_private %}
+                        <div class="button pwd-btn" data-pwd="{{ file.pwd }}" data-href="{% url 'download' file.id %}?pwd={{ file.pwd }}"><span class="glyphicon glyphicon-lock"></span></div>
+                        {% endif %}
                     </td>
                     <td>
+                        <a href="/dl/{{ file.id }}">{{ file.title }}</a>
+                    </td>
+                    <td>
+                        {{ file.private_label }}
+                    </td>
+                    <td class="fdesc">
                         {{ file.description }}
                     </td>
-                    <td>
-                        {{ file.title }}
-                    </td>
-                    <td>
+                    <td class="small">
                         {{ file.size | human_size }}
                     </td>
-                    <td>
+                    <td class="small">
                         {{ file.nb_dl }}
                     </td>
-                    <td>
-                        <input type="button" class="delete-btn" data-href="{% url 'delete' file.id %}" data-csrf="{% csrf_token %}" data-fid="{{ file.id }}" value="delete">
+                    <td class="vsmall">
+                        <div class="link-btn button" data-href="{{ URL_BASE }}{% url 'download' file.id %}" data-fid="{{ file.id }}"><span class="glyphicon glyphicon-link"></span></div>
+                    </td>
+                    <td class="vsmall">
+                        <div class="button delete-btn" data-href="{% url 'delete' file.id %}" data-csrf="{% csrf_token %}" data-fid="{{ file.id }}" ><span class="glyphicon glyphicon-remove"></span></div>
                     </td>
                 </tr>
             {% endfor %}
         </tbody>
     </table>
+
+    <div class="modal" id="pwd-modal" aria-labelledby="pwd-label" aria-hidden="true">
+        <h3>Link protected by a key</h3>
+        <p>Key</p>
+        <p><input id="pwd-modal-input" type="password" value="" readonly /></p>
+        <p><input id="show-pwd-btn" type="button" value="Show key" class="active" /></p>
+        <p>Download link embedding key</p>
+        <p><input id="link-pwd-modal-input" type="password" value="" readonly /></p>
+        <p><input id="show-link-btn" type="button" value="Show link" class="active" /></p>
+    </div>
+    <div class="modal" id="link-modal" aria-labelledby="link-label" aria-hidden="true">
+        <h3>Download link</h3>
+        <p><input id="link-modal-input" type="text" value="" readonly /></p>
+    </div>
+
 {% endblock %}

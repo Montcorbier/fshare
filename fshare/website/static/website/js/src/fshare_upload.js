@@ -20,8 +20,7 @@ $(document).ready(function () {
     var nanobar;
     var options = {
         id : "upload-progression",
-        target: document.getElementById("upload-progression"),
-        bg: "#9B59B6"
+        bg: "white"
     }
     var nanobar =  new Nanobar( options );
 
@@ -30,9 +29,12 @@ $(document).ready(function () {
     }).on('uploadprogress', function(file) {
         nanobar.go(file.upload.progress);
     }).on('complete', function(file) {
+        /*
         $.get(form.attr('data-size'), function( data ) {
             // TODO: update size available
         });
+        */
+        window.location.href = "dl/" + file.xhr.response;
     });
 })
 ;

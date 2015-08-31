@@ -8,6 +8,8 @@ from  django.contrib.auth.hashers import make_password
 
 from website.models import User, Permission, FSUser, RegistrationKey, File
 from website.renders import CustomRadioRenderer
+from fshare.settings.base import FILE_MAX_SIZE_ANONYMOUS, UPLOAD_DIRECTORY_ANONYMOUS
+from website.expiration import compute_expiration_date
 
 
 class RegisterForm(UserCreationForm):
@@ -153,16 +155,22 @@ class UploadFileForm(forms.ModelForm):
 
     class Meta:
         model = File
-        fields = ['title', 'private_label', 'description', 'is_private', 'pwd_hash']
+        fields = [
+                    'title', 
+                    # 'private_label', 
+                    # 'description', 
+                    # 'is_private', 
+                    # 'pwd',
+                ]
         widgets = {
-                    'title': forms.TextInput(attrs={'placeholder': "e.g. \"Tizard document\"", 'class': "form-control"}),
+                    'title': forms.TextInput(attrs={'placeholder': "not required", 'class': "form-control"}),
                     'private_label': forms.TextInput(attrs={'placeholder': "e.g. \"Top secret text file for the General\""}),
                     'description': forms.TextInput(attrs={'placeholder': "e.g. \"Just some reports\"", 'class': "form-control"}),
                     'is_private': forms.RadioSelect(attrs={'id': "file-public-switch", 'class': "radio"}, choices=[('private', 'Yep'), ('public', 'Nope, don\'t care')], renderer=CustomRadioRenderer),
-                    'pwd_hash': forms.TextInput(attrs={'placeholder': "e.g. \"topsecret\", \"9af66498ed73cc90ae\"", 'class': "form-control"}),
+                    'pwd': forms.TextInput(attrs={'placeholder': "e.g. \"topsecret\", \"9af66498ed73cc90ae\"", 'class': "form-control"}),
                     }
         labels = {
-                    'title': "Public title",
+                    'title': "File name",
                     'private_label': "Private title",
                     'description': "Description",
                     'is_private': "Protected by a key",
@@ -179,10 +187,16 @@ class UploadFileForm(forms.ModelForm):
         """
         if not super(UploadFileForm, self).is_valid():
             return False
-        return user.fshare_user.can_upload(self.cleaned_data.get('file').size)
+        if user.is_anonymous():
+            return self.cleaned_data.get('file').size <= FILE_MAX_SIZE_ANONYMOUS
+        else:
+            return user.fshare_user.can_upload(self.cleaned_data.get('file').size)
 
     def save(self, user):
-        folder = os.path.join(user.fshare_user.permission.base_path, user.username)
+        if user.is_anonymous():
+            folder = UPLOAD_DIRECTORY_ANONYMOUS
+        else:
+            folder = os.path.join(user.fshare_user.permission.base_path, user.username)
         if not os.path.exists(folder):
             os.makedirs(folder)
 
@@ -195,19 +209,20 @@ class UploadFileForm(forms.ModelForm):
                 destination.write(chunk)
 
         new_file = File(
-            owner=user,
+            owner=user if not user.is_anonymous() else None,
             title=self.cleaned_data.get('title') or uploaded_file,
             private_label=self.cleaned_data.get('private_label', self.cleaned_data.get('title')),
             description=self.cleaned_data.get('description'),
             path=filepath,
             checksum=m.hexdigest(),
             size=uploaded_file.size,
-            is_private=self.cleaned_data.get('is_private'),
+            is_private=self.cleaned_data.get('is_private') or False,
+            expiration_date=compute_expiration_date(uploaded_file.size),
         )
 
         if new_file.is_private:
-            new_file.pwd_hash = make_password(self.cleaned_data.get('pwd_hash'))
+            new_file.pwd = self.cleaned_data.get('pwd')
 
         new_file.save()
-        return filepath
+        return new_file
 

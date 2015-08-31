@@ -6,6 +6,8 @@
         <title>FShare - {% block title %}{{ title }}{% endblock %}</title>
 
         {% load staticfiles %}
+        {% block additional_style %}
+        {% endblock %}
         <link type="text/css" rel="stylesheet" href="{% static 'website/css/lib/animate.min.css' %}" />
         <link type="text/css" rel="stylesheet" href="{% static 'website/css/lib/chardinjs.css' %}" />
         <link type="text/css" rel="stylesheet" href="{% static 'website/css/lib/jquery.dropdown.css' %}" />
@@ -13,13 +15,11 @@
         <link type="text/css" rel="stylesheet" href="{% static 'website/generated/css/slick-theme.css' %}"/>
         <link type="text/css" rel="stylesheet" href="{% static 'website/generated/css/style.css' %}" />
 
-        <script type="application/javascript" src="{% static 'website/js/lib/dropzone.js' %}"></script>
         <script type="application/javascript" src="{% static 'website/js/lib/nanobar.min.js' %}"></script>
         <script type="application/javascript" src="{% static 'website/js/lib/jquery-1.11.3.min.js' %}"></script>
         <script type="application/javascript" src="{% static 'website/js/lib/jquery.dropdown.js' %}"></script>
         <script type="application/javascript" src="{% static 'website/js/lib/chardinjs.js' %}"></script>
         <script type="application/javascript" src="{% static 'website/js/lib/slick.min.js' %}"></script>
-        <script type="application/javascript" src="{% static 'website/js/src/fshare_upload.js' %}"></script>
         {% block additional_scripts %}
         {% endblock %}
     </head>
@@ -30,10 +30,11 @@
         </header>
         {% endblock %}
 
-        <section class="animated fadeInUp">
+        <section class="animated fadeInUp {% block contentclass %}{% endblock %}">
         {% block content %}{% endblock %}
         </section>
 
+        {% block additional_html %}{% endblock %}
         <footer>
         </footer>
 

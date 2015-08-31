@@ -2,10 +2,12 @@
 
 {% block title %}Register{% endblock %}
 
+{% block bodyclass %}colored{% endblock %}
+
 {% block content %}
     
     <div>
-        <form action="{% url "register" %}" method="post" class="basic-form" id="reg-form">
+        <form action="{% url "register" %}" method="post" class="" id="reg-form">
             {% csrf_token %}
             {{ reg_form.as_p }}
             <input type="submit" />

@@ -24,6 +24,7 @@
         <div class="pclass-carroussel slider">
         -->
             {% for p in perms %}
+            <!--
             <div class="pclass-key-management {% if p.name != "admin" %}hidden{% endif %}" id="{{ p.name }}">
                     <div class="content">
                         <div class="info">
@@ -46,26 +47,26 @@
 
                             <input type="button" data-pclass="{{ p.name }}" class="reg-key-btn" value="Generate a registration key for {{ p.name }} class">
                         </div>
+                -->
 
 
-
-                        <table>
+                        <table class="perm-tab">
                             <thead>
                                 <tr>
-                                    <th>Key</th>
-                                    <th>Status</th>
-                                    <th>Comment</th>
-                                    <th>Revocation</th>
+                                    <th class="key">key</th>
+                                    <th>status</th>
+                                    <th class="comment">comment</th>
+                                    <th>revocation</th>
                                 </tr>
                             </thead>
                             {% for key in unused_keys %}
                                 {% if key.permission == p %}
                                     <tr>
-                                        <td>
-                                            <input type="text" readonly class="key" value={{ key.key }} />
+                                        <td class="key">
+                                            <input type="text" readonly class="key-input" value={{ key.key }} />
                                         </td>
-                                        <td>Unused</td>
-                                        <td>A comment goes there</td>
+                                        <td><input type="button" value="not distributed"></td>
+                                        <td class="comment">A comment goes there</td>
                                         <td></td>
                                     </tr>
                                 {% endif %}

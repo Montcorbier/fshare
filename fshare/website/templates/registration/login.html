@@ -2,12 +2,14 @@
 
 {% block title %}Login{% endblock %}
 
+{% block bodyclass %}colored{% endblock %}
+
 {% block content %}
     <div>
-        <form action="{% url "login" %}" method="post" class="basic-form" id="login-form">
+        <form action="{% url "login" %}" method="post" class="" id="login-form">
             {% csrf_token %}
             {{ form.as_p }}
-            <input type="submit" />
+            <input type="submit" value="Go" />
         </form>
     </div>
 {% endblock %}

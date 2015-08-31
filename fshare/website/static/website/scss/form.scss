@@ -10,7 +10,7 @@ select {
     margin: auto; 
 }
 
-input[type=button], input[type=submit] {
+input[type=button], input[type=submit], .button {
     outline: none;
     display: block;
     float: center;
@@ -101,5 +101,24 @@ textarea, input {
     &:focus {
         outline: none;
         border-color: $very-light-color;
+    }
+}
+
+body.colored {
+    input[type=text], input[type=password], input[type=email] {
+        background-color: $dark-color;
+        display: block;
+        margin: auto;
+        margin-bottom: 50px;
+        margin-top: 10px;
+        width: 300px;
+        border-color: black;
+        &:focus {
+            border-color: white;
+        }
+    }
+    input[type=submit] {
+        width: 50%;
+        border-color: white;
     }
 }

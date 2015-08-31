@@ -5,6 +5,7 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse
 
+from fshare.settings.base import FILE_MAX_SIZE_ANONYMOUS
 from website.management.commands.generate_registration_key import Command as GenerateRegistrationKey
 from website.models import Permission, FSUser, RegistrationKey, File
 from website.forms import RegisterForm, PermissionForm, UploadFileForm
@@ -20,6 +21,7 @@ def index(request):
     ctxt = dict()
     ctxt["title"] = "Index"
     tpl = "website/index.html"
+    ctxt["form"] = UploadFileForm(request.POST, request.FILES, label_suffix='')
     return render(request, tpl, ctxt)
 
 
@@ -102,7 +104,7 @@ def check_pwd(request, fid, target):
             ctxt["target"] = target
             return (False, render(request, "website/enter_pwd.html", ctxt))
         # If the password is not correct, return an error
-        if not check_password(pwd, f.pwd_hash):
+        if pwd != f.pwd:
             ctxt = dict()
             ctxt["target"] = reverse('download', kwargs={ 'fid': fid})
             ctxt["wrong_pwd"] = True
@@ -110,7 +112,7 @@ def check_pwd(request, fid, target):
         return (True, pwd)
     return (True, "")
 
-@login_required(login_url="login")
+
 def upload(request):
     """
         Handle the file upload
@@ -128,8 +130,10 @@ def upload(request):
     elif request.method == "POST":
         form = UploadFileForm(request.POST, request.FILES, label_suffix='')
         if form.is_valid(request.user):
-            form.save(request.user)
-        return redirect('upload')
+            f = form.save(request.user)
+            return HttpResponse(f.id)
+        else:
+            return redirect('index')
     raise Http404
 
 
@@ -195,6 +199,10 @@ def get_file(request, fid):
     # Send file
     response = HttpResponse(content=open(f.path, 'rb').read())
     response['Content-Disposition'] = 'attachment; filename=%s' % f.title
+    # If the file has reached the max number of dl
+    if f.nb_dl >= f.max_dl:
+        # We delete it
+        f.delete()
     return response
 
 
@@ -316,6 +324,9 @@ def revoke_key(request):
     return HttpResponse("OK")
 
 
-@login_required
 def size_available(request):
-    return HttpResponse(FSUser.objects.get(user=request.user).storage_left)
+    if request.user.is_anonymous():
+        return HttpResponse(FILE_MAX_SIZE_ANONYMOUS)
+    else:
+        return HttpResponse(FSUser.objects.get(user=request.user).storage_left)
+

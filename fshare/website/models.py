@@ -15,7 +15,7 @@ class File(RandomPrimaryIdModel):
     """
 
     # Owner of the file
-    owner = models.ForeignKey(User, null=False)
+    owner = models.ForeignKey(User, null=True, blank=True)
 
     # File Description 
 
@@ -51,9 +51,21 @@ class File(RandomPrimaryIdModel):
 
     # Is the file protected with a password/key ?
     is_private = models.BooleanField(default=False)
-    # hash of the password
-    pwd_hash = models.CharField(max_length=512, blank=True, null=True, verbose_name="Key")
+    # Password to protect download 
+    # NB. This password is NOT hashed 
+    pwd = models.CharField(max_length=512, blank=True, null=True, verbose_name="Key")
 
+    # Limitations
+
+    # Number of DL before deleted
+    max_dl = models.IntegerField(default=1)
+    # Expiration date
+    expiration_date = models.DateTimeField(default=None, blank=True, null=True)
+
+    def delete(self):
+        # Delete file on disk
+        os.remove(self.path)
+        super(File, self).delete()
 
 class Permission(models.Model):
     """

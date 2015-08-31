@@ -1,0 +1,63 @@
+            {% for p in perms %}
+            <div class="pclass-container hidden" id="{{ p.name }}">
+                <div class="info">
+                    <h4>Information</h4>
+                </div>
+
+                <h4>Registration keys</a>
+                <h4>Keys already generated</h4>
+                <div class="console" id="reg_key_console" rows="15" cols="50">
+                    <div class="menu">
+                        <p class="active" for="unused-keys">Unused</p>
+                        <p for="distributed-keys">Distributed</p>
+                        <p for="used-keys">Used</p>
+                    </div>
+                    <div class="content" data-intro="The keys you generate will appear here. From here, you can mark a key as distributed or revoked. More info about registration keys can be find in the 'About' page." data-position="top">
+                        <div class="hidden tpl unused-key-tpl">
+                            <p>
+                                <input type="text" readonly class="key" />
+                                <span class="control hidden">
+                                    <span>mark as distributed</span>
+                                    <span>revoke</span>
+                                </span>
+                            </p>
+                        </div>
+
+                        <div class="unused-keys">
+                            {% for key in unused_keys %}
+                                {% if key.permission == p %}
+                                    <p>
+                                        <span class="control hidden">
+                                            <span class="mark_distrib_btn">mark as distributed</span>
+                                            <span class="revoke_key_btn">revoke</span>
+                                        </span>
+                                    </p>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+
+                        <div class="distributed-keys hidden">
+                            {% for key in distributed_keys %}
+                                {% if key.permission == p %}
+                                    <p>{{ key.key }} <input type="button" value="revoke" /></p>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+
+                        <div class="used-keys hidden">
+                            {% for key in used_keys %}
+                                {% if key.permission == p %}
+                                    <p>
+                                        <span class="key">
+                                            {{ key.key }}
+                                        </span>
+                                        <!-- to be removed -->
+                                        ({{ p.name }})
+                                    </p>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}

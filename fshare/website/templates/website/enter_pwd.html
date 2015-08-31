@@ -1,11 +1,11 @@
+{% extends "base.html" %}
 
-<html>
-    <head>
-        <title>FShare - {% block title %}{{ title }}{% endblock %}</title>
-        {% load staticfiles %}
-        <link type="text/css" rel="stylesheet" href="{% static 'website/generated/css/pwd.css' %}" />
-    </head>
-    <body>
+{% block title %}Password required{% endblock %}
+
+{% block bodyclass %}colored{% endblock %}
+
+{% block panel %}{% endblock %}
+{% block content %}
         <h2>File protected</h2>
         <form method="post" action="{{ target }}">
             {% csrf_token %}
@@ -16,5 +16,4 @@
             <input type="text" name="pwd"/>
             <input type="submit" value="Go">
         </form>
-    </body>
-</html>
+{% endblock %}

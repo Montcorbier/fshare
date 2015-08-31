@@ -1,3 +1,25 @@
 {% extends "base.html" %}
 
 {% block title %}Index{% endblock %}
+
+{% load staticfiles %}
+{% block additional_scripts %}
+    <script type="application/javascript" src="{% static 'website/js/lib/dropzone.js' %}"></script>
+    <script type="application/javascript" src="{% static 'website/js/src/fshare_upload.js' %}"></script>
+{% endblock %}
+
+{% block bodyclass %}colored{% endblock %}
+
+{% block contentclass %}center{% endblock %}
+
+{% block content %}
+    <form id="upload-form" action="{% url "upload" %}" method="POST" enctype="multipart/form-data" class="upload-info" data-size="{% url "size_available" %}">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <div id="dropzone" class="dropzone" action="{% url "upload" %}">
+            <div class="dz-message">Drop your file here</div>
+        </div>
+        <div id="upload-progression"></div>
+    </form>
+{% endblock %}
+

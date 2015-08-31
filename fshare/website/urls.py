@@ -1,3 +1,4 @@
+import django.views.defaults
 from django.conf.urls import include, url
 from django.contrib.auth.views import login as django_login
 from django.contrib.auth.views import logout as django_logout
@@ -26,4 +27,7 @@ urlpatterns = [
     url(r'^get/(?P<fid>[-A-Za-z0-9_]+)$', 'website.views.get_file', name="get_file"),
     # File deleting view
     url(r'^rm/(?P<fid>[-A-Za-z0-9_]+)$', 'website.views.delete', name="delete"),
+
+    # 404 page
+    url(r'^404$', 'django.views.defaults.page_not_found')
 ]

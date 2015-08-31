@@ -2,6 +2,12 @@
 
 {% block title %}Upload{% endblock %}
 
+{% load staticfiles %}
+{% block additional_scripts %}
+    <script type="application/javascript" src="{% static 'website/js/lib/dropzone.js' %}"></script>
+    <script type="application/javascript" src="{% static 'website/js/src/fshare_upload.js' %}"></script>
+{% endblock %}
+
 {% block content %}
     <div>
         <form id="upload-form" action="{% url "upload" %}" method="POST" enctype="multipart/form-data" class="upload-info" data-size="{% url "size_available" %}">

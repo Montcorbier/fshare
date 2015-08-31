@@ -15,9 +15,23 @@ body {
 
     &.colored {
         background-color: $dark-color;
-        nav {
+        section {
+            text-align: center;
+        }
+        &.no-nav nav {
             display: none;
         }
+
+        h2 {
+            margin-top: 200px;
+            color: white;
+            text-transform: uppercase;
+            font-size: 2em;
+            margin-bottom: 50px;
+        }
+    }
+    &.noheader header {
+        display: none;
     }
 }
 
@@ -87,7 +101,7 @@ header {
         font-size: 1.7em;
         font-family: $title-font;
         a { 
-            color: white;
+            color: black;
             display: inline-block;
             height: $title-size;
             width: $title-size * 1.7;
@@ -183,7 +197,10 @@ header {
 
 #user-menu {
     width: 300px;
-    margin-left: -40px;
+
+    ul {
+        padding-bottom: 0px;
+    }
 
     #storage-percent-container {
         width: 90%;
@@ -217,11 +234,43 @@ header {
             border-radius: 30px 0px 0px 30px;
         }
     }
+
+    #logout-btn {
+        color: white;
+        text-align: center;
+        height: 30px;
+        line-height: 30px;
+        padding: 0px;
+        border-width: 1px 0px 0px 0px;
+        border-radius: 0px 0px 4px 4px;
+        font-size: 0.8em;
+        &:hover {
+            color: $dark-color;
+            background-color: white;
+        }
+    }
 }
  
 section {
 
     padding: 50px;
+
+    &.center {
+        height: 300px;
+        &.wow {
+            height: 150px;
+        }
+        position: absolute;
+        top: 0px;
+        left: 0px;
+        bottom: 0px;
+        right: 0px;
+        margin: auto;
+        h2 {
+            margin-top: 0px;
+        }
+    }
+
 
     &>div {
         /*
@@ -268,7 +317,7 @@ section {
         border-style: solid;
         border-color: $border-color;
         border-width: 1px; 
-        border-radius: 5px;
+        border-radius: 2px;
     
         &.download {
             background-color: $dark-color;
@@ -277,7 +326,9 @@ section {
         }
 
         &.dropzone { 
-            color: $dark-color;
+            border-color: white; 
+            color: white; 
+            text-transform: uppercase;
         }
     
         line-height: $drop-height;
@@ -286,14 +337,19 @@ section {
         &:hover {
             cursor: pointer;
             &.dropzone {
-                background-color: $dark-color;
-                color: white;
+                background-color: white;
+                color: $dark-color;
             }
             &.download {
                 color: $dark-color;
                 background-color: white;
+                border-color: $dark-color;
             }
         }
+    }
+
+    .dz-preview {
+        display: none;
     }
 
     #pclass-management {
@@ -613,9 +669,11 @@ section {
             }
         }
 
+        /*
         &.file-info p > label {
             border-color: white;
         }
+        */
 
         span.value, input, .radio {
             margin-left: 20px;
@@ -638,18 +696,108 @@ section {
     }
 }
 
-#login-form, #reg-form {
-    width: 500px;
-    margin-left: 10%;
+#login-form, #reg-form, #upload-form {
+    width: 100%;
+    text-align: left;
+    .helptext {
+        display: none;
+    }
+    p {
+        height: 50px;
+    }
+    input, label {
+        display: inline-block;
+    }
     label {
-        width: 200px;
+        width: 40%;
+        padding-right: 20px;
+        text-align: right;
     }
     input {
-        width: 200px;
-        &[type=submit] {
+        width: 30%;
+    }
+    input[type=submit] {
+        margin-top: 50px;
+        width: 50%;
+        display: block;
+        float: center;
+    }
+    #id_file {
+        display: none;
+    }
+}
+
+table#myfiles, table.perm-tab {
+    
+    border-collapse: collapse;
+    border-spacing: 0px;
+
+    width: 100%;
+
+    &.perm-tab td {
+        text-align: center;
+    }
+
+    td.fdesc, td.comment {
+        width: 100%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    td {
+        min-width: 150px; 
+        height: 45px;
+        &.small {
+            min-width: 50px;
+            width: 50px;
+            text-align: center;
+        }
+        &.vsmall {
+            min-width: 35px;
+            width: 35px;
+            text-align: center;
+        }
+        &.key {
+            min-width: 250px;
+            width: 250px;
+            input {
+                width: 85%;
+            }
+        }
+    }
+
+    thead td, th {
+        border-style: solid;
+        border-width: 0px 0px 1px 0px;
+        border-color: $border-color;
+    }
+
+    .button {
+        width: 25px;
+        height: 35px;
+        span {
+            height: 100%;
             width: 100%;
-            margin: auto;
-            margin-top: 40px;
+            line-height: 35px;
+            font-size: 0.7em;
+            text-align: center;
+            margin: -1px;
         }
     }
 }
+
+.modal {
+    background-color: $dark-color;
+    text-align: center;
+
+    h3 {
+        color: white;
+    }
+
+    input {
+        border-color: white;
+        background-color: $dark-color;
+        width: 70%;
+    }
+}
+
