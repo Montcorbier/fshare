@@ -228,7 +228,7 @@ class UploadFileForm(forms.ModelForm):
             checksum=m.hexdigest(),
             size=uploaded_file.size,
             expiration_date=compute_expiration_date(uploaded_file.size),
-            key = hashlib.sha3_512(str.encode(key)).hexdigest() if key is not None else None,
+            key = hashlib.sha3_512(key.encode("utf-8")).hexdigest() if key is not None else None,
             iv = iv.decode("utf-8") if iv is not None else None,
         )
 
