@@ -207,7 +207,16 @@ class UploadFileForm(forms.ModelForm):
         key = self.cleaned_data.get('key') or None
 
         uploaded_file = self.cleaned_data.get('file')
+
+        # File path where to store the uploaded file
         filepath = "{0}/{1}".format(folder, uploaded_file)
+        # If a file already exists at this location
+        if os.path.exists(filepath):
+            # Iterate until we find an available path by adding a number after the name
+            n = 0
+            while os.path.exists(filepath + ".{0}".format(n)):
+                n += 1
+            filepath += ".{0}".format(n)
 
         if key is not None:
             iv, md5 = encrypt_file(filepath, uploaded_file, key)
