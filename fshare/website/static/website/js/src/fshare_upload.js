@@ -42,6 +42,7 @@ $(document).ready(function () {
         routine = setInterval(waiting_for_file, 1000);
     }).on('uploadprogress', function(file) {
         nanobar.go(file.upload.progress);
+        document.title = "FShare - Uploading " + Math.round(file.upload.progress) + "%";
         if (file.upload.progress == 100) {
             $(".text", filter).html("ciphering file ... please wait&nbsp;");
             $.removeCookie("fileReady");
