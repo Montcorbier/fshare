@@ -1,3 +1,4 @@
+import hashlib
 from random import randint
 from Crypto.Cipher import AES
 from Crypto.Protocol.KDF import PBKDF2
@@ -11,12 +12,16 @@ def encrypt_file(filepath, file_content, pwd):
     key = PBKDF2(pwd, iv)
     # Create a AES encryptor object
     enc = AES.new(key, AES.MODE_CBC, iv)
+    # Create a MD5 hasher for file checksum
+    m = hashlib.md5()
     # Open destination for write
     with open(filepath, 'wb+') as dest:
         # Iteration chunk by chunk
         while True:
             # Getting bytes from file
             chunk = file_content.read(CHUNK_SIZE)
+            # Update md5
+            m.update(chunk)
             # Detect EOF
             if len(chunk) == 0:
                 break
@@ -26,15 +31,15 @@ def encrypt_file(filepath, file_content, pwd):
             # Write to destination encrypted chunk
             dest.write(enc.encrypt(chunk))
     # Return iv used for encryption (need to be stored in DB)
-    return iv 
+    return iv, m.hexdigest()
 
 def decrypt_file(file_object, pwd):
     # Getting iv from DB
     iv = file_object.iv
     # Derive a key from "human" password and iv
-    key = PBKDF2(pwd, str.encode(iv))
+    key = PBKDF2(pwd, iv.encode("utf-8"))
     # Create a AES decryptor object
-    dec = AES.new(key, AES.MODE_CBC, str.encode(iv))
+    dec = AES.new(key, AES.MODE_CBC, iv.encode("utf-8"))
     # Content of the deciphered file to be filled chunk by chunk
     content = b""
 

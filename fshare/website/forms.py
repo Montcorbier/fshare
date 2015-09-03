@@ -208,16 +208,17 @@ class UploadFileForm(forms.ModelForm):
 
         uploaded_file = self.cleaned_data.get('file')
         filepath = "{0}/{1}".format(folder, uploaded_file)
-        m = hashlib.md5()
 
         if key is not None:
-            iv = encrypt_file(filepath, uploaded_file, key)
+            iv, md5 = encrypt_file(filepath, uploaded_file, key)
         else:
             iv = None
+            m = hashlib.md5()
             with open(filepath, 'wb+') as destination:
                 for chunk in uploaded_file.chunks():
                     m.update(chunk)
                     destination.write(chunk)
+            md5 = m.hexdigest()
 
         new_file = File(
             owner=user if not user.is_anonymous() else None,
@@ -225,7 +226,7 @@ class UploadFileForm(forms.ModelForm):
             private_label=self.cleaned_data.get('private_label', self.cleaned_data.get('title')),
             description=self.cleaned_data.get('description'),
             path=filepath,
-            checksum=m.hexdigest(),
+            checksum=md5,
             size=uploaded_file.size,
             expiration_date=compute_expiration_date(uploaded_file.size),
             key = hashlib.sha3_512(key.encode("utf-8")).hexdigest() if key is not None else None,

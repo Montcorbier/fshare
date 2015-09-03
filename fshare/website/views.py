@@ -108,7 +108,7 @@ def check_pwd(request, fid, target):
             ctxt["target"] = target
             return (False, render(request, "website/enter_pwd.html", ctxt))
         # If the password is not correct, return an error
-        if hashlib.sha3_512(str.encode(pwd)).hexdigest() != f.key:
+        if hashlib.sha3_512(pwd.encode("utf-8")).hexdigest() != f.key:
             ctxt = dict()
             ctxt["target"] = reverse('download', kwargs={ 'fid': fid})
             ctxt["wrong_pwd"] = True
