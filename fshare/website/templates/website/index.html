@@ -5,6 +5,8 @@
 {% load staticfiles %}
 {% block additional_scripts %}
     <script type="application/javascript" src="{% static 'website/js/lib/dropzone.js' %}"></script>
+    <script type="application/javascript" src="{% static 'website/js/lib/jquery.cookie.js' %}"></script>
+    <script type="application/javascript" src="{% static 'website/js/src/utils.js' %}"></script>
     <script type="application/javascript" src="{% static 'website/js/src/fshare_upload.js' %}"></script>
 {% endblock %}
 
@@ -23,3 +25,6 @@
     </form>
 {% endblock %}
 
+{% block filtercontent %}
+    <span class="text">uploading file&nbsp;</span><span class="points">&nbsp;&nbsp;&nbsp;</span>
+{% endblock %}

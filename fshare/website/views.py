@@ -1,3 +1,6 @@
+import hashlib
+import sha3
+
 from django.shortcuts import render, redirect, HttpResponse, Http404, get_object_or_404
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.hashers import check_password
@@ -9,6 +12,7 @@ from django.conf import settings
 from website.management.commands.generate_registration_key import Command as GenerateRegistrationKey
 from website.models import Permission, FSUser, RegistrationKey, File
 from website.forms import RegisterForm, PermissionForm, UploadFileForm
+from website.encryption import decrypt_file
 
 
 def index(request):
@@ -83,7 +87,7 @@ def is_admin(user):
 
 def check_pwd(request, fid, target):
     """
-        Check if the file is protected by a password.
+        Check if the file is protected by a key.
         If yes, check the password and redirect 
         to the password template if wrong.
 
@@ -91,20 +95,20 @@ def check_pwd(request, fid, target):
     # Get the file description
     f = get_object_or_404(File, id=fid)
     # If it is protected by a password
-    if f.is_private:
+    if f.key is not None:
         # Try to get the password from GET
-        if "pwd" in request.GET.keys():
-            pwd = request.GET["pwd"]
+        if "key" in request.GET.keys():
+            pwd = request.GET["key"]
         # Try to get the password from POST
-        elif "pwd" in request.POST.keys():
-            pwd = request.POST["pwd"]
+        elif "key" in request.POST.keys():
+            pwd = request.POST["key"]
         # If no password provided, return password view
         else:
             ctxt = dict()
             ctxt["target"] = target
             return (False, render(request, "website/enter_pwd.html", ctxt))
         # If the password is not correct, return an error
-        if pwd != f.pwd:
+        if hashlib.sha3_512(str.encode(pwd)).hexdigest() != f.key:
             ctxt = dict()
             ctxt["target"] = reverse('download', kwargs={ 'fid': fid})
             ctxt["wrong_pwd"] = True
@@ -155,10 +159,10 @@ def download(request, fid):
     f = get_object_or_404(File, id=fid)
     # At this point, either the file is public or 
     # the correct password was provided
-    if f.is_private:
+    if f.key is not None:
         # Set the password in context to pass it to get_file
         # view through GET parameter
-        ctxt["pwd"] = val
+        ctxt["key"] = val
     # Set file meta in context
     ctxt["f"] = f
     return render(request, tpl, ctxt)
@@ -197,12 +201,20 @@ def get_file(request, fid):
     f.nb_dl += 1
     f.save()
     # Send file
-    response = HttpResponse(content=open(f.path, 'rb').read())
+    content = ""
+    if f.iv is not None:
+        content = decrypt_file(f, request.GET["key"])
+    else:
+        with open(f.path, 'rb+') as fl:
+            content = fl.read()
+    response = HttpResponse(content=content)
     response['Content-Disposition'] = 'attachment; filename=%s' % f.title
+    response.set_cookie(key="fileReady", value=1, path="/dl")
     # If the file has reached the max number of dl
     if f.nb_dl >= f.max_dl:
         # We delete it
         f.delete()
+        pass
     return response
 
 

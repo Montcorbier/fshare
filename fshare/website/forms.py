@@ -1,4 +1,5 @@
 import hashlib
+import sha3
 import os
 
 from django import forms
@@ -10,6 +11,7 @@ from  django.contrib.auth.hashers import make_password
 from website.models import User, Permission, FSUser, RegistrationKey, File
 from website.renders import CustomRadioRenderer
 from website.expiration import compute_expiration_date
+from website.encryption import encrypt_file
 
 
 class RegisterForm(UserCreationForm):
@@ -156,14 +158,16 @@ class UploadFileForm(forms.ModelForm):
     class Meta:
         model = File
         fields = [
-                    'title', 
+                    # 'title', 
                     # 'private_label', 
                     # 'description', 
                     # 'is_private', 
                     # 'pwd',
+                    'key',
                 ]
         widgets = {
                     'title': forms.TextInput(attrs={'placeholder': "not required", 'class': "form-control"}),
+                    'key': forms.TextInput(attrs={'placeholder': "recommanded (used to encrypt file)", 'class': "form-control"}),
                     'private_label': forms.TextInput(attrs={'placeholder': "e.g. \"Top secret text file for the General\""}),
                     'description': forms.TextInput(attrs={'placeholder': "e.g. \"Just some reports\"", 'class': "form-control"}),
                     'is_private': forms.RadioSelect(attrs={'id': "file-public-switch", 'class': "radio"}, choices=[('private', 'Yep'), ('public', 'Nope, don\'t care')], renderer=CustomRadioRenderer),
@@ -200,13 +204,20 @@ class UploadFileForm(forms.ModelForm):
         if not os.path.exists(folder):
             os.makedirs(folder)
 
+        key = self.cleaned_data.get('key') or None
+
         uploaded_file = self.cleaned_data.get('file')
         filepath = "{0}/{1}".format(folder, uploaded_file)
         m = hashlib.md5()
-        with open(filepath, 'wb+') as destination:
-            for chunk in uploaded_file.chunks():
-                m.update(chunk)
-                destination.write(chunk)
+
+        if key is not None:
+            iv = encrypt_file(filepath, uploaded_file, key)
+        else:
+            iv = None
+            with open(filepath, 'wb+') as destination:
+                for chunk in uploaded_file.chunks():
+                    m.update(chunk)
+                    destination.write(chunk)
 
         new_file = File(
             owner=user if not user.is_anonymous() else None,
@@ -216,12 +227,14 @@ class UploadFileForm(forms.ModelForm):
             path=filepath,
             checksum=m.hexdigest(),
             size=uploaded_file.size,
-            is_private=self.cleaned_data.get('is_private') or False,
             expiration_date=compute_expiration_date(uploaded_file.size),
+            key = hashlib.sha3_512(str.encode(key)).hexdigest() if key is not None else None,
+            iv = iv.decode("utf-8") if iv is not None else None,
         )
 
+        pwd = self.cleaned_data.get('pwd') or None
         if new_file.is_private:
-            new_file.pwd = self.cleaned_data.get('pwd')
+            new_file.pwd = pwd
 
         new_file.save()
         return new_file

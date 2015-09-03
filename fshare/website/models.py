@@ -50,9 +50,16 @@ class File(RandomPrimaryIdModel):
     # Privacy
 
     # Is the file protected with a password/key ?
+    # useless (?)
+    # Need to add hash of pwd to check (OR a header ?)
     is_private = models.BooleanField(default=False)
+    # Hash of the key used to cipher file
+    key = models.CharField(max_length=512, blank=True, null=True, verbose_name="Key")
+    # Initialization Vector for AES encryption
+    iv = models.CharField(max_length=16, blank=True, null=True)
     # Password to protect download 
     # NB. This password is NOT hashed 
+    # To be removed in the future
     pwd = models.CharField(max_length=512, blank=True, null=True, verbose_name="Key")
 
     # Limitations

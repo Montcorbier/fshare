@@ -37,6 +37,10 @@
         {% block additional_html %}{% endblock %}
         <footer>
         </footer>
+        
+        <div id="filter" class="hidden">
+            {% block filtercontent %}{% endblock %}
+        </div>
 
         <script>
             $(document).ready(function() {

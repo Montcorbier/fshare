@@ -4,6 +4,13 @@
 
 {% block title %}{{ f.title }}{% endblock %}
 
+{% load staticfiles %}
+{% block additional_scripts %}
+    <script type="application/javascript" src="{% static 'website/js/lib/jquery.cookie.js' %}"></script>
+    <script type="application/javascript" src="{% static 'website/js/src/utils.js' %}"></script>
+    <script type="application/javascript" src="{% static 'website/js/src/download.js' %}"></script>
+{% endblock %}
+
 {% block content %}
 
     <div class="file-info">
@@ -12,10 +19,14 @@
         <p class="checksum"><label>MD5 Checksum</label> <span class="value">{{ f.checksum }}</span></p>
     </div>
 
-    <a href="{% url 'get_file' f.id %}{% if pwd %}?pwd={{ pwd }}{% endif %}">
+    <a href="{% url 'get_file' f.id %}{% if key %}?key={{ key }}{% endif %}">
         <div class="download">
             DOWNLOAD
         </div>
     </a>
 
+{% endblock %}
+
+{% block filtercontent %}
+    deciphering file ... please wait&nbsp;<span class="points">&nbsp;&nbsp;&nbsp;</span>
 {% endblock %}

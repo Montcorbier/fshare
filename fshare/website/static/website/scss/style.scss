@@ -71,8 +71,9 @@ a {
     text-align: justify;
 }
 
+$hdr-size: 50px;
+
 header {
-    $hdr-size: 50px;
     $title-size: $hdr-size;
     $nav-size: $hdr-size;
 
@@ -801,3 +802,15 @@ table#myfiles, table.perm-tab {
     }
 }
 
+#filter {
+    position: fixed;
+    z-index: 2;
+    top: 0px;
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
+    background-color: rgba(0,0,0, 0.7);
+    color: white;
+    text-align: center;
+    line-height: $hdr-size;
+}
