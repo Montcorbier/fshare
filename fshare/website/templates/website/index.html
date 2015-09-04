@@ -3,9 +3,15 @@
 {% block title %}Index{% endblock %}
 
 {% load staticfiles %}
+
+{% block additional_style %}
+    <link type="text/css" rel="stylesheet" href="{% static 'website/css/lib/jquery.modal.css' %}" />    
+{% endblock %}
+
 {% block additional_scripts %}
     <script type="application/javascript" src="{% static 'website/js/lib/dropzone.js' %}"></script>
     <script type="application/javascript" src="{% static 'website/js/lib/jquery.cookie.js' %}"></script>
+    <script type="application/javascript" src="{% static 'website/js/lib/jquery.modal.js' %}"></script>
     <script type="application/javascript" src="{% static 'website/js/src/utils.js' %}"></script>
     <script type="application/javascript" src="{% static 'website/js/src/fshare_upload.js' %}"></script>
 {% endblock %}
@@ -19,7 +25,7 @@
         {% csrf_token %}
         {{ form.as_p }}
         <div id="dropzone" class="dropzone" action="{% url "upload" %}">
-            <div class="dz-message">Drop your file here</div>
+            <div class="dz-message">Click or drop your file here</div>
         </div>
         <div id="upload-progression"></div>
     </form>
@@ -27,4 +33,12 @@
 
 {% block filtercontent %}
     <span class="text">uploading file&nbsp;</span><span class="points">&nbsp;&nbsp;&nbsp;</span>
+{% endblock %}
+
+{% block additional_html %}
+    <div class="modal" id="link-modal" aria-labelledby="link-label" aria-hidden="true">
+        <h3>download link</h3>
+        <p><input id="link-modal-input" type="text" value="" readonly /></p>
+        <p><input id="show-key-btn" type="button" value="" class="active" /></p>
+    </div>
 {% endblock %}

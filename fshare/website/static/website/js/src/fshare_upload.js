@@ -1,15 +1,64 @@
 Dropzone.autoDiscover = false;
 
-function PackData(boundary, data, filename, varname) {
-  var datapack = '';
-  datapack += '--' + boundary + '\r\n';
-  datapack += 'Content-Disposition: form-data; ';
-  datapack += 'name="' + varname + '"; filename="' + filename + '"\r\n';
-  datapack += 'Content-Type: application/octet-stream\r\n\r\n';
-  datapack += data;
-  datapack += '\r\n';
-  datapack += '--' + boundary + '--';
-  return datapack;
+var page_title = document.title;
+
+/* When displaying link to download an encrypted file, 
+   user can include or not the key parameter to the url
+   by clicking on a button */
+var toggle_key = function(href, key) {
+    /* Toggling button element */
+    var btn = $("#show-key-btn");
+    /* If active, ie if key is being displayed */
+    if (btn.hasClass("active")) {
+        /* Change button text */
+        btn.val("include key in url");
+        /* Reset the displayed url to href not including key */
+        $("#link-modal-input").val(href);
+        /* Set the button as inactive */
+        btn.removeClass("active");
+    /* If inactive, ie if key is not displayed */
+    } else {
+        /* Change button text */
+        btn.val("do not include key in url");
+        /* Include key in the displayed url */
+        $("#link-modal-input").val(href + key);
+        /* Set button as active */
+        btn.addClass("active");
+    }
+}
+
+/* Initialise and show modal containing download link 
+   of the previously uploaded file */
+var show_link = function(href, key) {
+    /* Modal element */
+    var mdl = $("#link-modal");
+    /* Toggling butotn element (to display/hide key in url) */
+    var btn = $("#show-key-btn");
+    /* Unbind all click events previously set on 
+       the toggling button (avoid bugs on second, 
+       third, etc. uploads) */
+    btn.unbind("click");
+    /* Set the button text */
+    btn.val("do not include key in url");
+    /* Set as active by default */
+    btn.addClass("active");
+    /* If a key was set */
+    if (key != "") {
+        /* Redefine key as a GET parameter (encoded for URI) */
+        key = "?key=" + encodeURIComponent(key);
+        /* Set the click event to toggle the key in url */
+        $("#show-key-btn").click(function() { toggle_key(href, key); });
+        /* Show the toggling button */
+        $("#show-key-btn").parent().removeClass("hidden");
+    /* If no key provided */
+    } else {
+        /* Hide the toggling button */
+        $("#show-key-btn").parent().addClass("hidden");
+    }
+    /* Set the default displayed url (including key if any) */
+    $("#link-modal-input").val(href + key);
+    /* Activate modal */
+    mdl.modal({clickClose: false});
 }
 
 $(document).ready(function () {
@@ -49,16 +98,19 @@ $(document).ready(function () {
             routine = setInterval(waiting_for_file, 1000);
         }
     }).on('complete', function(file) {
-        /*
-        $.get(form.attr('data-size'), function( data ) {
-            // TODO: update size available
-        });
-        */
-        var href = "dl/" + file.xhr.response;
+        $(filter).addClass("hidden");
+        clearInterval(routine);
+        document.title = "FShare - Upload completed"
+        var href =  "https://" + document.domain + "/dl/" + file.xhr.response;
         var key = $("input#id_key").val();
-        if (key != "" && key != undefined)
-            href += "?key=" + key;
-        window.location.href = href;
+        if (key == undefined || key == " ")
+            key = "";
+        show_link(href, key);
+        return;
     });
 })
 ;
+
+$(document).on($.modal.CLOSE, function() {
+    document.title = page_title;
+});
