@@ -200,8 +200,10 @@ class UploadFileForm(forms.ModelForm):
     def save(self, user):
         if user.is_anonymous():
             folder = settings.UPLOAD_DIRECTORY_ANONYMOUS
+            max_dl = settings.FILE_MAX_DL_ANONYMOUS
         else:
             folder = os.path.join(user.fshare_user.permission.base_path, user.username)
+            max_dl = self.cleaned_data.get('max_dl') or 1
         if not os.path.exists(folder):
             os.makedirs(folder)
 
@@ -241,6 +243,7 @@ class UploadFileForm(forms.ModelForm):
             expiration_date=compute_expiration_date(uploaded_file.size),
             key = hashlib.sha3_512(key.encode("utf-8")).hexdigest() if key is not None else None,
             iv = iv.decode("utf-8") if iv is not None else None,
+            max_dl = max_dl,
         )
 
         pwd = self.cleaned_data.get('pwd') or None
