@@ -8,3 +8,7 @@ def human_size(size):
     while idx < len(unit) and size > (1024 ** (idx + 1)):
         idx += 1
     return str(size // (1024 ** idx)) + unit[idx]
+
+@register.filter(name='in_mb')
+def in_mb(size):
+    return str(size // 1024**2);

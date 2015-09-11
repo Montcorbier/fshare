@@ -3,9 +3,11 @@
 {% block title %}Index{% endblock %}
 
 {% load staticfiles %}
+{% load fshare_extra %}
 
 {% block additional_style %}
     <link type="text/css" rel="stylesheet" href="{% static 'website/css/lib/jquery.modal.css' %}" />    
+    <link type="text/css" rel="stylesheet" href="{% static 'website/css/lib/glyphicons.min.css' %}" />    
 {% endblock %}
 
 {% block additional_scripts %}
@@ -14,6 +16,9 @@
     <script type="application/javascript" src="{% static 'website/js/lib/jquery.modal.js' %}"></script>
     <script type="application/javascript" src="{% static 'website/js/src/utils.js' %}"></script>
     <script type="application/javascript" src="{% static 'website/js/src/fshare_upload.js' %}"></script>
+    <script>
+        var max_file_size = {{ size_limit | in_mb }};
+    </script>
 {% endblock %}
 
 {% block bodyclass %}colored{% endblock %}
@@ -29,6 +34,17 @@
         </div>
         <div id="upload-progression"></div>
     </form>
+    <div class="idx-info">
+        <span class="glyphicon glyphicon-info-sign"></span>
+        <ul>
+            <li>Size limit is {{ size_limit | human_size }}B per file.</li>
+            <li>Files are deleted after {{ dl_limit }} download{% if dl_limit > 1 %}s{% endif %}.</li>
+            <li>Files not downloaded are deleted after {{ day_limit }} day{% if day_limit > 1 %}s{% endif %}.</li>
+        </ul>
+        <div class="reg-info">
+        To avoid these restrictions, ask for a registration key at <a href="mailto:{{ contact }}">{{ contact }}</a>.
+        </div>
+    </div>
 {% endblock %}
 
 {% block filtercontent %}

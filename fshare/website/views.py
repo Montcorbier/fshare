@@ -24,6 +24,10 @@ def index(request):
         return upload(request)
     ctxt = dict()
     ctxt["title"] = "Index"
+    ctxt["size_limit"] = settings.FILE_MAX_SIZE_ANONYMOUS
+    ctxt["day_limit"] = settings.FILE_MAX_DAYS_ANONYMOUS
+    ctxt["dl_limit"] = settings.FILE_MAX_DL_ANONYMOUS
+    ctxt["contact"] = settings.CONTACT
     tpl = "website/index.html"
     ctxt["form"] = UploadFileForm(request.POST, request.FILES, label_suffix='')
     return render(request, tpl, ctxt)

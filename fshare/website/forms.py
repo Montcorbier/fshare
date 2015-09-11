@@ -178,6 +178,7 @@ class UploadFileForm(forms.ModelForm):
                     'private_label': "Private title",
                     'description': "Description",
                     'is_private': "Protected by a key",
+                    'key': "key",
                     }
 
     def __init__(self, *args, **kwargs):

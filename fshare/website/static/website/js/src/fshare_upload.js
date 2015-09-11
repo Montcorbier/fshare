@@ -65,7 +65,7 @@ $(document).ready(function () {
     var fDropzone = new Dropzone('#upload-form'),
         form = $("#upload-form");
 
-    fDropzone.options.maxFilesize = 250;
+    fDropzone.options.maxFilesize = max_file_size;
     fDropzone.options.accept = function (file, done) {
         var size = 0;
         $.get(form.attr('data-size'), function( data ) {
@@ -100,6 +100,8 @@ $(document).ready(function () {
     }).on('complete', function(file) {
         $(filter).addClass("hidden");
         clearInterval(routine);
+        if (file.xhr == undefined)
+            return;
         document.title = "FShare - Upload completed"
         var href =  "https://" + document.domain + "/dl/" + file.xhr.response;
         var key = $("input#id_key").val();
@@ -107,6 +109,8 @@ $(document).ready(function () {
             key = "";
         show_link(href, key);
         return;
+    }).on('error', function(unk, err) {
+        alert(err); 
     });
 })
 ;
