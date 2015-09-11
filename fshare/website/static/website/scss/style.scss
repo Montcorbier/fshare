@@ -29,6 +29,13 @@ body {
             font-size: 2em;
             margin-bottom: 50px;
         }
+        a {
+            color: white;
+            &:hover {
+                color: $light-color;
+                text-decoration: none;
+            }
+        }
     }
     &.noheader header {
         display: none;
@@ -135,7 +142,7 @@ header {
         #subtitle {
             font-family: $main-font;
             font-size: 0.3em; 
-            color: $very-light-color;
+            color: white;
         }
     }
 
