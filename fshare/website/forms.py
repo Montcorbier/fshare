@@ -213,6 +213,8 @@ class UploadFileForm(forms.ModelForm):
 
         # File path where to store the uploaded file
         filepath = "{0}/{1}".format(folder, uploaded_file)
+        # Remove all non-ascii characters
+        filepath = "".join([c if ord(c) < 128 else '_' for c in filepath])
         # If a file already exists at this location
         if os.path.exists(filepath):
             # Iterate until we find an available path by adding a number after the name
