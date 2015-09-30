@@ -6,7 +6,8 @@ from django import forms
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.forms import UserCreationForm
-from  django.contrib.auth.hashers import make_password
+from django.contrib.auth.hashers import make_password
+from django.utils.safestring import mark_safe
 
 from website.models import User, Permission, FSUser, RegistrationKey, File
 from website.renders import CustomRadioRenderer
@@ -178,7 +179,7 @@ class UploadFileForm(forms.ModelForm):
                     'private_label': "Private title",
                     'description': "Description",
                     'is_private': "Protected by a key",
-                    'key': "key",
+                    'key': mark_safe("key (<span class=\"link\" id=\"gen-key-btn\">generate random</span>)"),
                     }
 
     def __init__(self, *args, **kwargs):

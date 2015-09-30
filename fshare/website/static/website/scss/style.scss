@@ -29,11 +29,12 @@ body {
             font-size: 2em;
             margin-bottom: 50px;
         }
-        a {
+        a, .link {
             color: white;
             &:hover {
                 color: $light-color;
                 text-decoration: none;
+                cursor: pointer;
             }
         }
     }

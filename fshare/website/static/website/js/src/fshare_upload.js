@@ -61,7 +61,27 @@ var show_link = function(href, key) {
     mdl.modal({clickClose: false});
 }
 
+/* Generate a random key for upload */
+var generate_key = function() {
+    var key = "";
+    var char_set = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    var len = 20;
+
+    for (var i=0; i < len; i++)
+        key += char_set.charAt(Math.floor(Math.random() * char_set.length));
+
+    return key;
+}
+
 $(document).ready(function () {
+
+    /* Init key generation button */
+    $("#gen-key-btn").click(function() {
+        var key = generate_key();
+        key = generate_key();
+        $("#id_key").val(key);
+    });
+
     var fDropzone = new Dropzone('#upload-form'),
         form = $("#upload-form");
 
