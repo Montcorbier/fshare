@@ -75,3 +75,6 @@ fshare/website/static/website/generated/css
 
 # Sass cache files
 .sass-cache*
+
+# Screenshots
+screenshot/*.png
