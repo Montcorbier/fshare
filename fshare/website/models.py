@@ -70,8 +70,12 @@ class File(RandomPrimaryIdModel):
     expiration_date = models.DateTimeField(default=None, blank=True, null=True)
 
     def delete(self):
-        # Delete file on disk
-        os.remove(self.path)
+        try:
+            # Delete file on disk
+            os.remove(self.path)
+        except OSError:
+            # If file was not found, pass
+            pass
         super(File, self).delete()
 
 class Permission(models.Model):
