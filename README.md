@@ -13,7 +13,7 @@ FShare is (another) file sharing plateform, with the following specificities:
 Anyone can drop a file on FShare without being registered. You just have to provide a key (if you want to)
 and drop your file. It's that easy.
 
-![alt "just drop your file"](https://github.com/Frky/fshare/screenshot/readme/drop_file.png")
+![alt just drop your file](screenshot/readme/drop_file.png")
 
 Anonymous users have the following limitations:
 * size limit is 200MB per file,
