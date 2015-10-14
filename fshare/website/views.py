@@ -8,6 +8,7 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse
 from django.conf import settings
+from django.utils.encoding import smart_str
 
 from website.management.commands.generate_registration_key import Command as GenerateRegistrationKey
 from website.models import Permission, FSUser, RegistrationKey, File
@@ -212,7 +213,8 @@ def get_file(request, fid):
         with open(f.path, 'rb+') as fl:
             content = fl.read()
     response = HttpResponse(content=content)
-    response['Content-Disposition'] = 'attachment; filename=%s' % f.title
+    response['Content-Disposition'] = 'attachment; filename="%s"' % smart_str(f.title)
+    response['Content-Length'] = f.size
     response.set_cookie(key="fileReady", value=1, path="/dl")
     # If the file has reached the max number of dl
     if f.nb_dl >= f.max_dl:
