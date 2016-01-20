@@ -40,6 +40,17 @@ body {
                 cursor: pointer;
             }
         }
+        header {
+            background-color: $dark-color;
+            #title {
+                a {
+                    color: white;
+                }
+                #subtitle {
+                    color: white;
+                }
+            }
+        }
     }
     &.noheader header {
         display: none;
@@ -281,7 +292,9 @@ form, .file-info {
     background-color: white;
     color: black;
     position: relative;
-    -webkit-transition: width 0.7s, color 0.1s, height 0.7s, border-color 0.7s;
+    moz-webkit-transition: width 0.7s, color 0.1s, height 0.7s, border-color 0.7s;
+        webkit-transition: width 0.7s, color 0.1s, height 0.7s, border-color 0.7s;
+               transition: width 0.7s, color 0.1s, height 0.7s, border-color 0.7s;
     &:hover {
         /*
         background-color: $dark-color;
