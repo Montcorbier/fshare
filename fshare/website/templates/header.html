@@ -1,6 +1,6 @@
 {% block header %}
-    <div class="animated fadeInLeft" id="title">
-        <a href="{% url 'index' %}">
+    <div class="animated flipInX" id="title">
+        <a class="" href="{% url 'index' %}">
             <div id="f">F</div><div id="share">Share</div>
         </a>
         <div id="subtitle">
@@ -24,7 +24,7 @@
         });
 
     </script>
-    <nav class="animated fadeInRight">
+    <nav class="">
     {% block nav %}
         {% if user.is_authenticated %}
             <a href="#">

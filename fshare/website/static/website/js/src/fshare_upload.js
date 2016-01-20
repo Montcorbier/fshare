@@ -101,7 +101,7 @@ $(document).ready(function () {
     var nanobar;
     var options = {
         id : "upload-progression",
-        bg: "white"
+        bg: "#8D608C"
     }
     var nanobar =  new Nanobar( options );
 
