@@ -8,6 +8,7 @@
 {% block additional_style %}
     <link type="text/css" rel="stylesheet" href="{% static 'website/css/lib/jquery.modal.css' %}" />    
     <link type="text/css" rel="stylesheet" href="{% static 'website/css/lib/glyphicons.min.css' %}" />    
+    <link type="text/css" rel="stylesheet" href="{% static 'website/generated/css/index.css' %}" />    
 {% endblock %}
 
 {% block additional_scripts %}
@@ -21,9 +22,9 @@
     </script>
 {% endblock %}
 
-{% block bodyclass %}colored{% endblock %}
+{% block bodyclass %}{% endblock %}
 
-{% block contentclass %}center{% endblock %}
+{% block contentclass %}{% endblock %}
 
 {% block content %}
     <form id="upload-form" action="{% url "upload" %}" method="POST" enctype="multipart/form-data" class="upload-info" data-size="{% url "size_available" %}">

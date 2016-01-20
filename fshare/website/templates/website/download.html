@@ -17,6 +17,7 @@
         <p class="name"><label>File</label> <span class="value">{{ f.title }}</span></p>
         <p class="size"><label>Size</label> <span class="value">{{ f.size | human_size }}B</span></p>
         <p class="checksum"><label>MD5 Checksum</label> <span class="value">{{ f.checksum }}</span></p>
+        <p></p>
     </div>
 
     <a href="{% url 'get_file' f.id %}{% if key %}?key={{ key }}{% endif %}">

@@ -1,0 +1,105 @@
+<div class="faq">
+    <p>
+        <label class="question">
+            FShare? What is that?
+        </label>
+        <span class="answer">
+            It's a minimalist and *partially secured* file sharing website. Just drop your file 
+            and send a link. No registration needed. 
+        </span>
+    </p>
+
+    <p>
+        <label class="question">
+            What are the limitations?
+        </label>
+        <span class="answer">
+            It's a one-shot upload, that means that a file can only be downloaded once. 
+            Then, it is removed from our disks (yes, completely). Files are only persistent
+            for 7 days, after what they are deleted from our disks (yes, completely). 
+        </span>
+    </p>
+
+    <p>
+        <label class="question">
+            Are my files safe relatively to other users?
+        </label>
+        <span class="answer">
+            Download links are made of 12 random characters in a charset of 62 items, that is about 70 bits of entropy.
+            This makes the guess of download links very unlinkely. In addition, you can protect your file by a key, 
+            which is another protection against other users. So yes, your files are safe relatively to other users. 
+        </span>
+    </p>
+
+    <p>
+        <label class="question">
+            Are my files safe relatively to the server?
+        </label>
+        <span class="answer">
+            Not entirely. Your files are stored encrypted (using the key you provided at upload) on the server, 
+            and the server does not store the key. But, due to performance caring and technical specifitities, 
+            the encryption is handled by the server. So, in an obvious way, it knows at some point both the key 
+            and the clear file. We are working on client-side encryption and decryption to improve this point.
+        </span>
+    </p>
+
+    <p>
+        <label class="question">
+            To gain trust from your users, shouldn't your project be open-source?
+        </label>
+        <span class="answer">
+            Yes, you're right. And it is. Just <a href="https://github.com/Frky/fshare">right here</a>.
+        </span>
+    </p>
+
+    <p>
+        <label class="question">
+            I want to be my own master. What should I do?
+        </label>
+        <span class="answer">
+            Clone FShare and install it on your own server. You can even ask for a sub-domain of fshare.io.
+        </span>
+    </p>
+
+    <p>
+        <label class="question">
+            What are registered users able to do?
+        </label>
+        <span class="answer">
+            Registration is a mechanism to gain more freedom on your use of FShare. For instance, you can set the 
+            number of downloads before deleting the file (up to a bound), or the expiration date of your file
+            (also up to a bound). You also have a higher limit for each file.
+        </span>
+    </p>
+
+    <p>
+        <label class="question">
+            Can't you be more specific about values?
+        </label>
+        <span class="answer">
+            Nope. To be a registered user, you need a key provided by the owner of the website
+            (in this case, us). This key corresponds to a certain class of restrictions that sets
+            the bounds for your account. To sum up, bounds depend on the registration key you have.
+        </span>
+    </p>
+
+    <p>
+        <label class="question">
+            How can I get a registration key?
+        </label>
+        <span class="answer">
+            Send a request to fshare@udtq.fr. The more we know you personally, the less restrictions 
+            you'll have.
+        </span>
+    </p>
+
+    <p>
+        <label class="question">
+            How can I contact you?
+        </label>
+        <span class="answer">
+            You can send an email at fshare@udtq.fr.
+        </span>
+    </p>
+
+</div>
