@@ -73,14 +73,19 @@ var generate_key = function() {
     return key;
 }
 
-$(document).ready(function () {
-
-    /* Init key generation button */
-    $("#gen-key-btn").click(function() {
+var ui_generate_key = function() {
         var key = generate_key();
         key = generate_key();
         $("#id_key").val(key);
-    });
+}
+
+$(document).ready(function () {
+
+    /* Init key generation button */
+    $("#gen-key-btn").click(ui_generate_key);
+
+    /* Generate key */
+    ui_generate_key();
 
     var fDropzone = new Dropzone('#upload-form'),
         form = $("#upload-form");
