@@ -9,6 +9,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse
 from django.conf import settings
 from django.utils.encoding import smart_str
+from django.views.decorators.csrf import csrf_exempt
 
 from website.management.commands.generate_registration_key import Command as GenerateRegistrationKey
 from website.models import Permission, FSUser, RegistrationKey, File
@@ -122,6 +123,7 @@ def check_pwd(request, fid, target):
     return (True, "")
 
 
+@csrf_exempt
 def upload(request):
     """
         Handle the file upload
