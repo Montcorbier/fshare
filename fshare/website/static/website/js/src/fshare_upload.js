@@ -57,6 +57,8 @@ var show_link = function(href, key) {
     }
     /* Set the default displayed url (including key if any) */
     $("#link-modal-input").val(href + key);
+    /* Set handler for modal close */
+    $(document).on($.modal.CLOSE, function() { ui_generate_key(); });
     /* Activate modal */
     mdl.modal({clickClose: false});
 }
@@ -113,6 +115,7 @@ $(document).ready(function () {
     fDropzone.on('addedfile', function (file) {
         nanobar.go(0);
         $(filter).removeClass("hidden");
+        $(".text", filter).html("uploading file&nbsp;");
         routine = setInterval(waiting_for_file, 1000);
     }).on('uploadprogress', function(file) {
         nanobar.go(file.upload.progress);
