@@ -1,5 +1,6 @@
 import hashlib
 import sha3
+import mimetypes
 
 from django.shortcuts import render, redirect, HttpResponse, Http404, get_object_or_404
 from django.contrib.auth import authenticate, login
@@ -214,7 +215,7 @@ def get_file(request, fid):
     else:
         with open(f.path, 'rb+') as fl:
             content = fl.read()
-    response = HttpResponse(content=content)
+    response = HttpResponse(content_type=mimetypes.guess_type(f.title)[0], content=content)
     response['Content-Disposition'] = 'attachment; filename="%s"' % smart_str(f.title)
     response['Content-Length'] = f.size
     response.set_cookie(key="fileReady", value=1, path="/dl")
