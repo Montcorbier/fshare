@@ -322,3 +322,20 @@ form, .file-info {
         left: -$dp_border;
     }
 }
+
+/* MOBILE VERSION */
+@media only screen and (max-device-width: 500px) {
+    header {
+        #title {
+            font-size: 1.5em;
+        }
+    }
+    section {
+        font-size: 2em;
+    }
+    #dropzone, .download {
+        zoom: 150%;
+        height: 200px; 
+        line-height: 197px;
+    }
+}
