@@ -61,8 +61,8 @@ var show_link = function(href, key) {
     $(document).on($.modal.CLOSE, function() { ui_generate_key(); });
     /* Activate modal */
     mdl.modal({clickClose: false});
-    /* Select the link */
-     $("#link-modal-input").select();
+    /* Select link */
+    $("#link-modal-input").select();
 }
 
 /* Generate a random key for upload */
@@ -87,6 +87,14 @@ $(document).ready(function () {
 
     /* Init key generation button */
     $("#gen-key-btn").click(ui_generate_key);
+
+    /* Init Copy button */
+    var clip = new Clipboard("#cpy-link-btn");
+    clip.on('success', function(e) {
+        $(filter).removeClass("hidden");
+        $(".text", filter).html("copied!");
+        setTimeout(function() { $(filter).addClass("hidden"); }, 1000);
+    });
 
     /* Generate key */
     ui_generate_key();
@@ -125,6 +133,7 @@ $(document).ready(function () {
         if (file.upload.progress == 100) {
             $(".text", filter).html("ciphering file ... please wait&nbsp;");
             $.removeCookie("fileReady");
+            clearInterval(routine);
             routine = setInterval(waiting_for_file, 1000);
         }
     }).on('complete', function(file) {

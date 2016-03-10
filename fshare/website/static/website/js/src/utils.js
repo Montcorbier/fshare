@@ -22,3 +22,4 @@ var waiting_for_file = function() {
         nb_point = 0;
     }
 }
+
