@@ -61,6 +61,8 @@ var show_link = function(href, key) {
     $(document).on($.modal.CLOSE, function() { ui_generate_key(); });
     /* Activate modal */
     mdl.modal({clickClose: false});
+    /* Select the link */
+     $("#link-modal-input").select();
 }
 
 /* Generate a random key for upload */
