@@ -1,6 +1,6 @@
 # FShare
 
-Check it out, it'son online: https://fshare.udtq.fr
+Check it out, it's online: https://fshare.udtq.fr
 
 FShare is (another) file sharing plateform, with the following specificities:
 * It does not require any registration to drop a file.
@@ -13,7 +13,7 @@ FShare is (another) file sharing plateform, with the following specificities:
 Anyone can drop a file on FShare without being registered. You just have to provide a key (if you want to)
 and drop your file. It's that easy.
 
-![alt just drop your file](screenshot/readme/drop_file.png)
+![alt just drop your file](screenshot/readme/drop_file_v2.png)
 
 Anonymous users have the following limitations:
 * size limit is 200MB per file,
@@ -52,7 +52,7 @@ FShare on your own server, and in particular:
 * how to set up the cron to automatically delete deprecated files, 
 * etc. 
 
-### Cipher file names
+### Cipher file names (UP: Done!)
 For now, even though file contents are encrypted, we still store files with the initial name in clear. 
 In the future, we will improve privacy by encrypting file names too.
 
