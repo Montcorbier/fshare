@@ -223,7 +223,7 @@ def get_file(request, fid):
             # Decrypt filename
             fname = decrypt_filename(f.title, val, f.iv)
         except Exception:
-            ctxt["fname"] = f.title
+            fname = f.title
     else:
         fname = f.title
         with open(f.path, 'rb+') as fl:
