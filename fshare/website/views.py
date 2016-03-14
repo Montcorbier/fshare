@@ -15,7 +15,7 @@ from django.views.decorators.csrf import csrf_exempt
 from website.management.commands.generate_registration_key import Command as GenerateRegistrationKey
 from website.models import Permission, FSUser, RegistrationKey, File
 from website.forms import RegisterForm, PermissionForm, UploadFileForm
-from website.encryption import decrypt_file
+from website.encryption import decrypt_file, decrypt_filename
 
 
 def index(request):
@@ -171,6 +171,10 @@ def download(request, fid):
         # Set the password in context to pass it to get_file
         # view through GET parameter
         ctxt["key"] = val
+        # Decrypt file name
+        ctxt["fname"] = decrypt_filename(f.title, val, f.iv)
+    else:
+        ctxt["fname"] = f.title
     # Set file meta in context
     ctxt["f"] = f
     return render(request, tpl, ctxt)
@@ -212,11 +216,14 @@ def get_file(request, fid):
     content = ""
     if f.iv is not None:
         content = decrypt_file(f, request.GET["key"])
+        # Decrypt filename
+        fname = decrypt_filename(f.title, val, f.iv)
     else:
+        fname = f.title
         with open(f.path, 'rb+') as fl:
             content = fl.read()
     response = HttpResponse(content_type=mimetypes.guess_type(f.title)[0], content=content)
-    response['Content-Disposition'] = 'attachment; filename="%s"' % smart_str(f.title)
+    response['Content-Disposition'] = 'attachment; filename="%s"' % smart_str(fname)
     response['Content-Length'] = f.size
     response.set_cookie(key="fileReady", value=1, path="/dl")
     # If the file has reached the max number of dl

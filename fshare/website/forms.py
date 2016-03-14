@@ -12,7 +12,7 @@ from django.utils.safestring import mark_safe
 from website.models import User, Permission, FSUser, RegistrationKey, File
 from website.renders import CustomRadioRenderer
 from website.expiration import compute_expiration_date
-from website.encryption import encrypt_file
+from website.encryption import encrypt_file, encrypt_filename, generate_random_path, decrypt_filename
 
 
 class RegisterForm(UserCreationForm):
@@ -212,21 +212,12 @@ class UploadFileForm(forms.ModelForm):
 
         uploaded_file = self.cleaned_data.get('file')
 
-        # File path where to store the uploaded file
-        filepath = "{0}/{1}".format(folder, uploaded_file)
-        # Remove all non-ascii characters
-        filepath = "".join([c if ord(c) < 128 else '_' for c in filepath])
-        # If a file already exists at this location
-        if os.path.exists(filepath):
-            # Iterate until we find an available path by adding a number after the name
-            n = 0
-            while os.path.exists(filepath + ".{0}".format(n)):
-                n += 1
-            filepath += ".{0}".format(n)
-
         if key is not None:
-            iv, md5 = encrypt_file(filepath, uploaded_file, key)
+            iv, md5, filepath = encrypt_file(str(uploaded_file), uploaded_file, folder, key)
+            filename = encrypt_filename(str(uploaded_file), key, iv)
         else:
+            filepath = generate_random_path(folder)
+            filename = str(uploaded_file)
             iv = None
             m = hashlib.md5()
             with open(filepath, 'wb+') as destination:
@@ -237,7 +228,7 @@ class UploadFileForm(forms.ModelForm):
 
         new_file = File(
             owner=user if not user.is_anonymous() else None,
-            title=self.cleaned_data.get('title') or uploaded_file,
+            title=filename,
             private_label=self.cleaned_data.get('private_label', self.cleaned_data.get('title')),
             description=self.cleaned_data.get('description'),
             path=filepath,
