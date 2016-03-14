@@ -171,8 +171,11 @@ def download(request, fid):
         # Set the password in context to pass it to get_file
         # view through GET parameter
         ctxt["key"] = val
-        # Decrypt file name
-        ctxt["fname"] = decrypt_filename(f.title, val, f.iv)
+        try:
+            # Decrypt file name
+            ctxt["fname"] = decrypt_filename(f.title, val, f.iv)
+        except Exception:
+            ctxt["fname"] = f.title
     else:
         ctxt["fname"] = f.title
     # Set file meta in context
@@ -216,8 +219,11 @@ def get_file(request, fid):
     content = ""
     if f.iv is not None:
         content = decrypt_file(f, request.GET["key"])
-        # Decrypt filename
-        fname = decrypt_filename(f.title, val, f.iv)
+        try:
+            # Decrypt filename
+            fname = decrypt_filename(f.title, val, f.iv)
+        except Exception:
+            ctxt["fname"] = f.title
     else:
         fname = f.title
         with open(f.path, 'rb+') as fl:
