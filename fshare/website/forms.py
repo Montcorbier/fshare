@@ -211,13 +211,14 @@ class UploadFileForm(forms.ModelForm):
         key = self.cleaned_data.get('key') or None
 
         uploaded_file = self.cleaned_data.get('file')
+        filename_safe = bytes(uploaded_file.name, "utf-8")
 
         if key is not None:
-            iv, md5, filepath = encrypt_file(str(uploaded_file), uploaded_file, folder, key)
-            filename = encrypt_filename(str(uploaded_file), key, iv)
+            iv, md5, filepath = encrypt_file(filename_safe, uploaded_file, folder, key)
+            filename = encrypt_filename(filename_safe, key, iv)
         else:
             filepath = generate_random_path(folder)
-            filename = str(uploaded_file)
+            filename = filename_safe
             iv = None
             m = hashlib.md5()
             with open(filepath, 'wb+') as destination:
