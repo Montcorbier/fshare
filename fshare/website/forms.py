@@ -8,6 +8,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.hashers import make_password
 from django.utils.safestring import mark_safe
+from django.utils.encoding import smart_str
 
 from website.models import User, Permission, FSUser, RegistrationKey, File
 from website.renders import CustomRadioRenderer
@@ -211,7 +212,7 @@ class UploadFileForm(forms.ModelForm):
         key = self.cleaned_data.get('key') or None
 
         uploaded_file = self.cleaned_data.get('file')
-        filename_safe = bytes(uploaded_file.name, "utf-8")
+        filename_safe = smart_str(uploaded_file.name, "utf-8")
 
         if key is not None:
             iv, md5, filepath = encrypt_file(filename_safe, uploaded_file, folder, key)

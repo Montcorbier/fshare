@@ -5,6 +5,8 @@ from base64 import b64encode, b64decode
 from Crypto.Cipher import AES
 from Crypto.Protocol.KDF import PBKDF2
 
+from django.utils.encoding import smart_str
+
 CHUNK_SIZE = 24*1024
 
 def generate_random_path(folder):
@@ -19,9 +21,8 @@ def encrypt_filename(filename, pwd, iv):
     key = PBKDF2(pwd, iv)
     # Create a AES encryptor object
     enc = AES.new(key, AES.MODE_CBC, iv)
-    filename = str.encode(filename)
     while len(filename) % 16 != 0:
-        filename += str.encode(' ')
+        filename += smart_str(' ', "utf-8")
     return b64encode(enc.encrypt(filename))
 
 def decrypt_filename(filename_enc, pwd, iv):
