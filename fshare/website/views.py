@@ -1,6 +1,8 @@
 import hashlib
 import sha3
 import mimetypes
+from io import BytesIO
+from zipfile import ZipFile
 
 from django.shortcuts import render, redirect, HttpResponse, Http404, get_object_or_404
 from django.contrib.auth import authenticate, login
@@ -8,8 +10,10 @@ from django.contrib.auth.hashers import check_password
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse
+from django.core.files.uploadedfile import SimpleUploadedFile, InMemoryUploadedFile
 from django.conf import settings
 from django.utils.encoding import smart_str
+from django.utils.datastructures import MultiValueDict
 from django.views.decorators.csrf import csrf_exempt
 
 from website.management.commands.generate_registration_key import Command as GenerateRegistrationKey
@@ -140,7 +144,34 @@ def upload(request):
         context["form"] = UploadFileForm(request.POST, request.FILES, label_suffix='')
         return render(request, tpl, context)
     elif request.method == "POST":
-        form = UploadFileForm(request.POST, request.FILES, label_suffix='')
+        zipped_files = MultiValueDict()
+        # If more than one file was uploaded
+        if len(request.FILES.keys()) > 1:
+            # Create a memory IO file
+            in_mem = BytesIO()
+            # Create a ZIP object in memory
+            zipped = ZipFile(in_mem, "w")
+            # Iteration over files
+            for f in request.FILES.values():
+                # Read content
+                content = f.read()
+                # Add it to ZIP archive
+                zipped.writestr(f.name, content)
+            # Close ZIP archive
+            zipped.close()
+            # Seek to beginning of the ZIP file 
+            in_mem.seek(0)
+            # Get ZIP size
+            zip_size = len(in_mem.read())
+            # Seek to beginning again
+            in_mem.seek(0)
+            # Create a InMemory ZIP file
+            zip_file = InMemoryUploadedFile(in_mem, None, "4399.zip", "application/zip", zip_size, None, None)
+            zipped_files["file"] = zip_file
+        else:
+            zipped_files["file"] = request.FILES["file[0]"]
+        # Upload file (either a single one or the ZIP containing all uploaded files)
+        form = UploadFileForm(request.POST, zipped_files, label_suffix='')
         if form.is_valid(request.user):
             f = form.save(request.user)
             return HttpResponse(f.id)

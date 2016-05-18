@@ -58,7 +58,7 @@ var show_link = function(href, key) {
     /* Set the default displayed url (including key if any) */
     $("#link-modal-input").val(href + key);
     /* Set handler for modal close */
-    $(document).on($.modal.CLOSE, function() { ui_generate_key(); });
+    // $(document).on($.modal.CLOSE, function() { ui_generate_key(); });
     /* Activate modal */
     mdl.modal({clickClose: false});
     /* Select link */
@@ -103,7 +103,11 @@ $(document).ready(function () {
         form = $("#upload-form");
 
     fDropzone.options.maxFilesize = max_file_size;
+    fDropzone.options.uploadMultiple = true;
+    fDropzone.options.parallelUploads = 50;
+    /*
     fDropzone.options.accept = function (file, done) {
+        console.log("yo");
         var size = 0;
         $.get(form.attr('data-size'), function( data ) {
             size = parseInt(data);
@@ -114,6 +118,9 @@ $(document).ready(function () {
             }
         });
     }
+    */
+    // TODO
+    fDropzone.options.maxFiles = 50;
 
     var nanobar;
     var options = {
@@ -122,12 +129,20 @@ $(document).ready(function () {
     }
     var nanobar =  new Nanobar( options );
 
+    var ref_file = null;
+
     fDropzone.on('addedfile', function (file) {
+        if (ref_file == null)
+            ref_file = file;
+        if (ref_file != file)
+            return;
         nanobar.go(0);
         $(filter).removeClass("hidden");
         $(".text", filter).html("uploading file&nbsp;");
         routine = setInterval(waiting_for_file, 1000);
     }).on('uploadprogress', function(file) {
+        if (ref_file != file)
+            return;
         nanobar.go(file.upload.progress);
         document.title = "FShare - Uploading " + Math.round(file.upload.progress) + "%";
         if (file.upload.progress == 100) {
@@ -137,6 +152,7 @@ $(document).ready(function () {
             routine = setInterval(waiting_for_file, 1000);
         }
     }).on('complete', function(file) {
+        ref_file = null;
         $(filter).addClass("hidden");
         clearInterval(routine);
         if (file.xhr == undefined)
