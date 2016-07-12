@@ -26,6 +26,8 @@ class File(RandomPrimaryIdModel):
     private_label = models.CharField(max_length=255, null=True, blank=True)
     # Public description of the file
     description = models.TextField(null=True, blank=True, default="")
+    # List of files (relevant only if file is an archive)
+    file_list = models.CharField(max_length=1024, null=True, blank=True)
 
     # File Information
 

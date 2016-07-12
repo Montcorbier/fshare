@@ -1,6 +1,7 @@
 import hashlib
 import sha3
 import os
+import json
 
 from django import forms
 from django.conf import settings
@@ -199,7 +200,7 @@ class UploadFileForm(forms.ModelForm):
         else:
             return user.fshare_user.can_upload(self.cleaned_data.get('file').size)
 
-    def save(self, user):
+    def save(self, user, file_names):
         if user.is_anonymous():
             folder = settings.UPLOAD_DIRECTORY_ANONYMOUS
             max_dl = settings.FILE_MAX_DL_ANONYMOUS
@@ -213,13 +214,16 @@ class UploadFileForm(forms.ModelForm):
 
         uploaded_file = self.cleaned_data.get('file')
         filename_safe = smart_str(uploaded_file.name, "utf-8")
+        file_list_safe = smart_str(json.dumps(file_names), "utf-8")
 
         if key is not None:
             iv, md5, filepath = encrypt_file(filename_safe, uploaded_file, folder, key)
             filename = encrypt_filename(filename_safe, key, iv)
+            file_list = encrypt_filename(file_list_safe, key, iv)
         else:
             filepath = generate_random_path(folder)
             filename = filename_safe
+            file_list = file_list_safe
             iv = None
             m = hashlib.md5()
             with open(filepath, 'wb+') as destination:
@@ -233,6 +237,7 @@ class UploadFileForm(forms.ModelForm):
             title=filename,
             private_label=self.cleaned_data.get('private_label', self.cleaned_data.get('title')),
             description=self.cleaned_data.get('description'),
+            file_list=file_list, 
             path=filepath,
             checksum=md5,
             size=uploaded_file.size,
@@ -241,7 +246,6 @@ class UploadFileForm(forms.ModelForm):
             iv = iv.decode("utf-8") if iv is not None else None,
             max_dl = max_dl,
         )
-
         pwd = self.cleaned_data.get('pwd') or None
         if new_file.is_private:
             new_file.pwd = pwd

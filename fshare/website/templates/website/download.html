@@ -20,6 +20,16 @@
         <p></p>
     </div>
 
+    {% if flist %}
+    <div class="file-content">
+        <div class="content"><label>Content</label> <div class="value">
+            {% for f_name in flist %}
+                <p class="content_file">{{ f_name }}</p>
+            {% endfor %}
+        </div></div>
+        <p></p>
+    </div>
+    {% endif %}
     <a href="{% url 'get_file' f.id %}{% if key %}?key={{ key }}{% endif %}">
         <div class="download">
             DOWNLOAD

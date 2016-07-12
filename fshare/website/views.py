@@ -1,6 +1,7 @@
 import hashlib
 import sha3
 import mimetypes
+import json
 from io import BytesIO
 from zipfile import ZipFile
 
@@ -19,7 +20,7 @@ from django.views.decorators.csrf import csrf_exempt
 from website.management.commands.generate_registration_key import Command as GenerateRegistrationKey
 from website.models import Permission, FSUser, RegistrationKey, File
 from website.forms import RegisterForm, PermissionForm, UploadFileForm
-from website.encryption import decrypt_file, decrypt_filename
+from website.encryption import decrypt_file, decrypt_filename, generate_random_name
 
 
 def index(request):
@@ -147,6 +148,8 @@ def upload(request):
         zipped_files = MultiValueDict()
         # If more than one file was uploaded
         if len(request.FILES.keys()) > 1:
+            # Create a list containing all file names
+            file_names = list()
             # Create a memory IO file
             in_mem = BytesIO()
             # Create a ZIP object in memory
@@ -157,6 +160,7 @@ def upload(request):
                 content = f.read()
                 # Add it to ZIP archive
                 zipped.writestr(f.name, content)
+                file_names.append(f.name)
             # Close ZIP archive
             zipped.close()
             # Seek to beginning of the ZIP file 
@@ -166,14 +170,26 @@ def upload(request):
             # Seek to beginning again
             in_mem.seek(0)
             # Create a InMemory ZIP file
-            zip_file = InMemoryUploadedFile(in_mem, None, "4399.zip", "application/zip", zip_size, None, None)
+            zip_file = InMemoryUploadedFile(
+                                                in_mem, 
+                                                None, 
+                                                "FShare - {0}.zip".format(generate_random_name(10)), 
+                                                "application/zip", 
+                                                zip_size, 
+                                                None, 
+                                                None
+                                            )
             zipped_files["file"] = zip_file
         else:
+            # If only one file, zipped_files contains the 
+            # unique file and file_names contains the name
+            # of the file
             zipped_files["file"] = request.FILES["file[0]"]
+            file_names = [request.FILES["file[0]"].name]
         # Upload file (either a single one or the ZIP containing all uploaded files)
         form = UploadFileForm(request.POST, zipped_files, label_suffix='')
         if form.is_valid(request.user):
-            f = form.save(request.user)
+            f = form.save(request.user, file_names)
             return HttpResponse(f.id)
         else:
             return redirect('index')
@@ -205,10 +221,20 @@ def download(request, fid):
         try:
             # Decrypt file name
             ctxt["fname"] = decrypt_filename(f.title, val, f.iv)
+            # Decrypt file list
+            ctxt["flist"] = json.loads(decrypt_filename(f.file_list, val, f.iv).decode("utf-8"))
         except Exception:
             ctxt["fname"] = f.title
+            ctxt["flist"] = list()
     else:
         ctxt["fname"] = f.title
+        ctxt["flist"] = json.loads(f.file_list)
+    # If only one file (not an archive), remove flist
+    if len(ctxt["flist"]) == 1 and ctxt["flist"][0] == ctxt["fname"].decode("utf-8"):
+        ctxt["flist"] = None
+    else:
+        # Sort the list of files
+        ctxt["flist"] = sorted(ctxt["flist"])
     # Set file meta in context
     ctxt["f"] = f
     return render(request, tpl, ctxt)
