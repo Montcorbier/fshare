@@ -262,10 +262,17 @@ form, .file-info, .file-content {
         border-color: black;
         padding-left: 20px;
         margin-left: 0px;
-        p {
+        max-height: 130px;
+        overflow-y: scroll;
+        p.content_file {
             line-height: 30px;
             height: 30px;
             color: $dark-color;
+        }
+        p.show_content {
+            color: gray;
+            font-style: italic;
+            cursor: pointer;
         }
     }
 }

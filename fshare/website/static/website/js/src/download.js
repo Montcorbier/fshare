@@ -7,4 +7,11 @@ $(document).ready(function() {
         $(filter).removeClass("hidden");
         routine = setInterval(waiting_for_file, 1000);
     });
+
+    $(".show_content").click(function() {
+        $(".show_content").toggleClass("hidden");
+        $(".content_file", ".content").each(function() {
+            $(this).toggleClass("hidden");
+        });
+    });
 });

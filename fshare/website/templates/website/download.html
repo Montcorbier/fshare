@@ -16,15 +16,16 @@
     <div class="file-info">
         <p class="name"><label>File</label> <span class="value">{{ fname }}</span></p>
         <p class="size"><label>Size</label> <span class="value">{{ f.size | human_size }}B</span></p>
-        <p class="checksum"><label>MD5 Checksum</label> <span class="value">{{ f.checksum }}</span></p>
+        <!-- <p class="checksum"><label>MD5 Checksum</label> <span class="value">{{ f.checksum }}</span></p> -->
         <p></p>
     </div>
 
     {% if flist %}
     <div class="file-content">
         <div class="content"><label>Content</label> <div class="value">
+            <p class="show_content">display content</p>
             {% for f_name in flist %}
-                <p class="content_file">{{ f_name }}</p>
+                <p class="content_file hidden">{{ f_name }}</p>
             {% endfor %}
         </div></div>
         <p></p>
