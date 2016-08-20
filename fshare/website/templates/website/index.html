@@ -16,6 +16,7 @@
     <script type="application/javascript" src="{% static 'website/js/lib/jquery.cookie.js' %}"></script>
     <script type="application/javascript" src="{% static 'website/js/lib/jquery.modal.js' %}"></script>
     <script type="application/javascript" src="{% static 'website/js/src/utils.js' %}"></script>
+    <script type="application/javascript" src="{% static 'website/js/src/modal.js' %}"></script>
     <script type="application/javascript" src="{% static 'website/js/src/fshare_upload.js' %}"></script>
     <script>
         var max_file_size = {{ size_limit | in_mb }};
@@ -35,6 +36,7 @@
         </div>
         <div id="upload-progression"></div>
     </form>
+    {% if not user.is_authenticated or user.is_anonymous %}
     <div class="idx-info">
         <span class="glyphicon glyphicon-info-sign"></span>
         <ul>
@@ -46,6 +48,7 @@
         To avoid these restrictions, ask for a registration key at <a href="mailto:{{ contact }}">{{ contact }}</a>.
         </div>
     </div>
+    {% endif %}
 {% endblock %}
 
 {% block filtercontent %}

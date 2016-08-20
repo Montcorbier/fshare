@@ -2,21 +2,13 @@
 var output;
 
 var get_key_callback = function(pclass, key) {
-    var class_container = $("#" + pclass);
-    /* Get template for key in console */
-    var el = $(".unused-key-tpl>p", class_container).clone();
+    /* Modal element */
+    var mdl = $("#key-modal");
     /* Set key */
-    $(".key", el).val(key);
-    /* Add it in console view */
-    $(".unused-keys", class_container).append(el);
-    /* Activate mark & revoke buttons */
-    $(el).hover(function() {
-            $(".control", this).removeClass("hidden");
-    }, function() {
-            $(".control", this).addClass("hidden");
-    });
-    /* Scroll down to see the new key */
-    $(".unused-keys", class_container).animate({scrollTop: $(".unused-keys", class_container).prop("scrollHeight")}, 500);
+    $("#key-modal-input").val(key);
+    mdl.modal({clockClose: false});
+    $("#key-modal-input").select();
+
 }
 
 var mark_key_callback = function(data, key) {
@@ -56,7 +48,7 @@ var revoke_key = function(key) {
 
 var init_key_btn = function(el) {
     $(el).click(function() {
-        get_key($(el).attr("data-pclass"));
+        get_key($(".pclass", "#registration-key-form").val());
     });
 }
 
@@ -92,52 +84,6 @@ var init_cockpit = function() {
             /* Enable the one corresponding to the clicked button */
             $("." + $(this).attr("for"), output).removeClass("hidden");
         });
-    });
-    /* Init control buttons on hover */
-    $(".content p", output).hover(function() {
-            $(".control", this).removeClass("hidden");
-    }, function() {
-            $(".control", this).addClass("hidden");
-    });
-    /* Init mark distributed button */
-    $(".mark_distrib_btn", output).click(function() {
-        var key = $(".key", $(this).parent().parent()).val();
-        mark_key(key);
-    });
-    /* Init revoke button */
-    $(".revoke_key_btn", output).click(function() {
-        var key = $(".key", $(this).parent().parent()).val();
-        revoke_key(key);
-    });
-    /* Init carroussel */
-    $(".pclass-carrousel").slick({
-        centerMode: true,
-        vertical: true,
-        verticalSwiping: true,
-        slidesToShow: 3,
-        swipeToSlide: true,
-        dots: true,
-        infinite: false,
-        responsive: [
-            {
-                breakpoint: 768,
-                settings: {
-                    arrows: false,
-                    centerMode: true,
-                    centerPadding: '40px',
-                    slidesToShow: 3,
-                }
-            },
-            {
-                breakpoint: 480,
-                settings: {
-                    arrows: false,
-                    centerMode: true,
-                    centerPadding: '40px',
-                    slidesToShow: 1,
-                }
-            }
-        ]
     });
 }
 

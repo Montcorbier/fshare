@@ -57,6 +57,12 @@ class File(RandomPrimaryIdModel):
     is_private = models.BooleanField(default=False)
     # Hash of the key used to cipher file
     key = models.CharField(max_length=512, blank=True, null=True, verbose_name="Key")
+    # Real key - stored ONLY for authenticated users
+    # (to be able to edit content later on)
+    # In this case, confidentiality of content is not ensured anymore
+    # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    # (to preserve confidentiality, please use anonymous uploads)
+    real_key = models.CharField(max_length=512, blank=True, null=True, default=None)
     # Initialization Vector for AES encryption
     iv = models.CharField(max_length=16, blank=True, null=True)
     # Password to protect download 
@@ -80,6 +86,7 @@ class File(RandomPrimaryIdModel):
             pass
         super(File, self).delete()
 
+
 class Permission(models.Model):
     """
         Class of permissions for a given user.
@@ -89,7 +96,11 @@ class Permission(models.Model):
     # Name of the permission category
     name = models.CharField(max_length=255, primary_key=True)
     # Max storage space in bytes
-    storage_limit = models.IntegerField(default=100000)
+    storage_limit = models.IntegerField(default=209715200)
+    # Max number of DLs per file
+    max_dl_limit = models.IntegerField(default=5)
+    # Max expiration date delay
+    max_expiration_delay = models.IntegerField(default=30)
     # Location where to store the files
     base_path = models.CharField(max_length=1024, null=False, blank=False, default=os.path.abspath(getattr(settings, "MEDIA_ROOT", "/tmp/")))
 
@@ -119,11 +130,20 @@ class FSUser(models.Model):
     user = models.OneToOneField(User, related_name="fshare_user")
     permission = models.ForeignKey(Permission, null=False, blank=False)
 
-    def can_upload(self, size):
+    def can_upload(self, size, max_dl, ttl):
         """
             Check if a user can upload a file
 
         """
+        print(max_dl, ttl)
+        # max_dl_limit set to 0 means no limit
+        if self.permission.max_dl_limit > 0:
+            if max_dl is None or max_dl > self.permission.max_dl_limit:
+                return False
+        # expiration delay set to 0 means no limit
+        if self.permission.max_expiration_delay > 0:
+            if ttl is None or ttl > self.permission.max_expiration_delay:
+                return False
         return (self.storage_left - size) > 0
 
     @property

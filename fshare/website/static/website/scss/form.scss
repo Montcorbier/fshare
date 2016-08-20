@@ -30,7 +30,7 @@ input[type=button], input[type=submit], .button {
     }
 }
 
-input[type=text], input[type=password], input[type=email] {
+input[type=text], input[type=password], input[type=email], input[type=number] {
     border-style: solid;
     border-color: $dark-color;
     border-width: 0px 0px 1px 0px;

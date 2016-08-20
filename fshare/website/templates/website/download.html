@@ -31,7 +31,7 @@
         <p></p>
     </div>
     {% endif %}
-    <a href="{% url 'get_file' f.id %}{% if key %}?key={{ key }}{% endif %}">
+    <a href="{% url 'get' f.id %}{% if key %}?key={{ key }}{% endif %}">
         <div class="download">
             DOWNLOAD
         </div>

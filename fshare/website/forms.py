@@ -2,6 +2,7 @@ import hashlib
 import sha3
 import os
 import json
+from datetime import datetime, timedelta
 
 from django import forms
 from django.conf import settings
@@ -10,6 +11,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.hashers import make_password
 from django.utils.safestring import mark_safe
 from django.utils.encoding import smart_str
+from django.contrib.auth.models import AnonymousUser
 
 from website.models import User, Permission, FSUser, RegistrationKey, File
 from website.renders import CustomRadioRenderer
@@ -95,11 +97,32 @@ class PermissionForm(forms.ModelForm):
 
     class Meta:
         model = Permission
-        fields = ['name', 'storage_limit', 'base_path']
+        fields = [
+                    'name', 
+                    'storage_limit', 
+                    'max_dl_limit', 
+                    'max_expiration_delay',
+                    'base_path', 
+                ]
+        labels = {
+                    'name': 'Permission name',
+                    'storage_limit': 'Storage limit (in bytes)',
+                    'base_path': 'Path to permission class storage',
+                    'max_dl_limit': 'Max #DL per file',
+                    'max_expiration_date': 'Max TTL per file',
+                }
         # TODO handle base path field correctly
         widgets = {
                     'name': forms.TextInput(attrs={'placeholder': "permission class name", 'class': "form-control"}),
                     'storage_limit': forms.NumberInput(attrs={'placeholder': "storage limit (in bytes)", 'class': "form-control"}),
+                    'max_dl_limit': forms.NumberInput(attrs={
+                                                                'placeholder': "max number of downloads before deleting file", 
+                                                                'class': "form-control"
+                                                            }),
+                    'max_expirtion_delay': forms.NumberInput(attrs={
+                                                                'placeholder': "max number of days before deleting file", 
+                                                                'class': "form-control"
+                                                            }),
                     'base_path': forms.TextInput(attrs={'placeholder': "base path to store files", 'class': "form-control"}),
                 }
 
@@ -156,36 +179,67 @@ class PermissionForm(forms.ModelForm):
 
 
 class UploadFileForm(forms.ModelForm):
+    expiration_date = forms.IntegerField(
+                                            widget = forms.NumberInput(attrs={'class': "form-control"}),
+                                            label = 'time to live in days',
+                                        )
     file = forms.FileField(widget=forms.FileInput(attrs={'class': 'superDropzone'}), label='')
 
     class Meta:
         model = File
         fields = [
-                    # 'title', 
-                    # 'private_label', 
-                    # 'description', 
-                    # 'is_private', 
-                    # 'pwd',
                     'key',
+                    'max_dl',
                 ]
         widgets = {
-                    'title': forms.TextInput(attrs={'placeholder': "not required", 'class': "form-control"}),
                     'key': forms.TextInput(attrs={'placeholder': "recommanded (used to encrypt file)", 'class': "form-control"}),
-                    'private_label': forms.TextInput(attrs={'placeholder': "e.g. \"Top secret text file for the General\""}),
-                    'description': forms.TextInput(attrs={'placeholder': "e.g. \"Just some reports\"", 'class': "form-control"}),
-                    'is_private': forms.RadioSelect(attrs={'id': "file-public-switch", 'class': "radio"}, choices=[('private', 'Yep'), ('public', 'Nope, don\'t care')], renderer=CustomRadioRenderer),
-                    'pwd': forms.TextInput(attrs={'placeholder': "e.g. \"topsecret\", \"9af66498ed73cc90ae\"", 'class': "form-control"}),
-                    }
+                    'max_dl': forms.NumberInput(attrs={'class': "form-control"}),
+                }
         labels = {
-                    'title': "File name",
-                    'private_label': "Private title",
-                    'description': "Description",
-                    'is_private': "Protected by a key",
                     'key': mark_safe("key (<span class=\"link\" id=\"gen-key-btn\">generate random</span>)"),
-                    }
+                    'max_dl': "maximum number of downloads",
+                }
 
     def __init__(self, *args, **kwargs):
+        if "set_default" in kwargs.keys():
+            set_default = kwargs.pop("set_default")
+        else:
+            set_default = False
+        # Get the authenticated user
+        if "user" in kwargs.keys():
+            user = kwargs.pop("user")
+        else:
+            user = AnonymousUser()
+        # Init form with super constructor
         super(UploadFileForm, self).__init__(*args, **kwargs)
+        # Case 1: user is anonymous (or not logged in) > remove unrelevant fields from form
+        if not user.is_authenticated() or user.is_anonymous():
+            # So no max dl field
+            self.fields.pop("max_dl")
+            # And no expiration date field
+            self.fields.pop("expiration_date")
+        # Case 2: user is logged in > more permissions than anonymous user
+        elif set_default:
+            # Set default value for both fields
+            self.fields["max_dl"].widget.__dict__["attrs"]["value"] = settings.FILE_MAX_DL_ANONYMOUS
+            self.fields["expiration_date"].widget.__dict__["attrs"]["value"] = settings.FILE_MAX_DAYS_ANONYMOUS
+            # Set min, max and label (if relevant) for max_dl
+            if user.fshare_user.permission.max_dl_limit == 0:
+                # 0 = no limit
+                self.fields["max_dl"].widget.__dict__["attrs"]["min"] = 0
+                self.fields["max_dl"].label += " (0 = no limit)"
+            else:
+                self.fields["max_dl"].widget.__dict__["attrs"]["min"] = 1
+                self.fields["max_dl"].widget.__dict__["attrs"]["max"] = user.fshare_user.permission.max_dl_limit
+            # Set min, max and label (if relevant) for expiration date
+            if user.fshare_user.permission.max_expiration_delay == 0:
+                # 0 = no limit
+                self.fields["expiration_date"].widget.__dict__["attrs"]["min"] = 0
+                self.fields["expiration_date"].label += " (0 = no limit)"
+            else:
+                self.fields["expiration_date"].widget.__dict__["attrs"]["min"] = 1
+                self.fields["expiration_date"].widget.__dict__["attrs"]["max"] = user.fshare_user.permission.max_expiration_delay
+
 
     def is_valid(self, user=None):
         """
@@ -195,18 +249,24 @@ class UploadFileForm(forms.ModelForm):
         """
         if not super(UploadFileForm, self).is_valid():
             return False
-        if user.is_anonymous():
+        if user.is_anonymous() or not user.is_authenticated():
             return self.cleaned_data.get('file').size <= settings.FILE_MAX_SIZE_ANONYMOUS
         else:
-            return user.fshare_user.can_upload(self.cleaned_data.get('file').size)
+            return user.fshare_user.can_upload(
+                            self.cleaned_data.get('file').size, 
+                            self.cleaned_data.get('max_dl'),
+                            self.cleaned_data.get('expiration_date'),
+                                                )
 
-    def save(self, user, file_names):
-        if user.is_anonymous():
+    def save(self, user, file_names, fid=None):
+        if user.is_anonymous() or not user.is_authenticated():
             folder = settings.UPLOAD_DIRECTORY_ANONYMOUS
             max_dl = settings.FILE_MAX_DL_ANONYMOUS
+            ttl = settings.FILE_MAX_DAYS_ANONYMOUS
         else:
             folder = os.path.join(user.fshare_user.permission.base_path, user.username)
-            max_dl = self.cleaned_data.get('max_dl') or 1
+            max_dl = self.cleaned_data.get('max_dl')
+            ttl = self.cleaned_data.get('expiration_date')
         if not os.path.exists(folder):
             os.makedirs(folder)
 
@@ -232,20 +292,44 @@ class UploadFileForm(forms.ModelForm):
                     destination.write(chunk)
             md5 = m.hexdigest()
 
-        new_file = File(
-            owner=user if not user.is_anonymous() else None,
-            title=filename,
-            private_label=self.cleaned_data.get('private_label', self.cleaned_data.get('title')),
-            description=self.cleaned_data.get('description'),
-            file_list=file_list, 
-            path=filepath,
-            checksum=md5,
-            size=uploaded_file.size,
-            expiration_date=compute_expiration_date(uploaded_file.size),
-            key = hashlib.sha3_512(key.encode("utf-8")).hexdigest() if key is not None else None,
-            iv = iv.decode("utf-8") if iv is not None else None,
-            max_dl = max_dl,
-        )
+        if fid is not None:
+            try:
+                new_file = File.objects.get(id=fid)
+                new_file.title = filename,
+                new_file.size = uploaded_file.size,
+                new_file.file_list = file_list, 
+                new_file.path = filepath,
+                new_file.checksum = md5,
+            except Exception:
+                new_file = None
+        else:
+            new_file = None
+
+        # IF user is authenticated, we DO store the key to allow modification
+        # of content later on
+        # !!! CONFIDENTIALITY IS NOT PRESERVED IN THIS CASE
+        # (please use anonymous upload to ensure confidentiality)
+        if user.is_authenticated() and not user.is_anonymous():
+            real_key = key
+        else:
+            real_key = None
+
+        if not new_file:
+            new_file = File(
+                owner=user if not user.is_anonymous() else None,
+                title=filename,
+                private_label=self.cleaned_data.get('private_label', self.cleaned_data.get('title')),
+                description=self.cleaned_data.get('description'),
+                file_list=file_list, 
+                path=filepath,
+                checksum=md5,
+                size=uploaded_file.size,
+                expiration_date=compute_expiration_date(ttl),
+                key = hashlib.sha3_512(key.encode("utf-8")).hexdigest() if key is not None else None,
+                real_key = real_key,
+                iv = iv.decode("utf-8") if iv is not None else None,
+                max_dl = max_dl,
+            )
         pwd = self.cleaned_data.get('pwd') or None
         if new_file.is_private:
             new_file.pwd = pwd

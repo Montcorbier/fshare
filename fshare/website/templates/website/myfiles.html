@@ -8,8 +8,9 @@
 {% endblock %}
 
 {% block additional_scripts %}
-     <script type="application/javascript" src="{% static 'website/js/src/myfiles.js' %}"></script>
-     <script type="application/javascript" src="{% static 'website/js/lib/jquery.modal.js' %}"></script>
+    <script type="application/javascript" src="{% static 'website/js/lib/jquery.modal.js' %}"></script>
+    <script type="application/javascript" src="{% static 'website/js/src/modal.js' %}"></script>
+    <script type="application/javascript" src="{% static 'website/js/src/myfiles.js' %}"></script>
 {% endblock %}
 
 {% load fshare_extra %}
@@ -20,36 +21,36 @@
             <tr>
                 <td class="small"></td>
                 <td>file</td>
-                <td>private label</td>
-                <td>description</td>
                 <td class="small">size</td>
                 <td class="small">#dl</td>
+                <td class="small">#max_dl</td>
+                <td class="small">expiration date</td>
                 <td class="vsmall"></td>
                 <td class="vsmall"></td>
             </tr>
         </thead>
         <tbody>
             {% for file in files %}
-                <tr id="file-{{ file.id }}">
-                    <td class="small">
-                        {% if file.is_private %}
-                        <div class="button pwd-btn" data-pwd="{{ file.pwd }}" data-href="{% url 'download' file.id %}?pwd={{ file.pwd }}"><span class="glyphicon glyphicon-lock"></span></div>
-                        {% endif %}
-                    </td>
-                    <td>
-                        <a href="/dl/{{ file.id }}">{{ file.title }}</a>
-                    </td>
-                    <td>
-                        {{ file.private_label }}
-                    </td>
-                    <td class="fdesc">
-                        {{ file.description }}
+                <tr id="file-{{ file.id }}" data-key="{{ file.real_key }}" class="file">
+                    <td></td>
+                    <td class="name" data-href="{% url 'get_name' file.id %}?key={{ file.real_key }}">
+                        <a href="/dl/{{ file.id }}{% if file.real_key %}?key={{ file.real_key }}{% endif %}">{{ file.title }}</a>
                     </td>
                     <td class="small">
-                        {{ file.size | human_size }}
+                        {{ file.size | human_size }}B
                     </td>
                     <td class="small">
                         {{ file.nb_dl }}
+                    </td>
+                    <td class="small">
+                        {{ file.max_dl }}
+                    </td>
+                    <td class="small">
+                        {% if file.expiration_date %}
+                            {{ file.expiration_date }}
+                        {% else %}
+                            never
+                        {% endif %}
                     </td>
                     <td class="vsmall">
                         <div class="link-btn button" data-href="{{ URL_BASE }}{% url 'download' file.id %}" data-fid="{{ file.id }}"><span class="glyphicon glyphicon-link"></span></div>
@@ -62,18 +63,11 @@
         </tbody>
     </table>
 
-    <div class="modal" id="pwd-modal" aria-labelledby="pwd-label" aria-hidden="true">
-        <h3>Link protected by a key</h3>
-        <p>Key</p>
-        <p><input id="pwd-modal-input" type="password" value="" readonly /></p>
-        <p><input id="show-pwd-btn" type="button" value="Show key" class="active" /></p>
-        <p>Download link embedding key</p>
-        <p><input id="link-pwd-modal-input" type="password" value="" readonly /></p>
-        <p><input id="show-link-btn" type="button" value="Show link" class="active" /></p>
-    </div>
     <div class="modal" id="link-modal" aria-labelledby="link-label" aria-hidden="true">
-        <h3>Download link</h3>
+        <h3>download link</h3>
         <p><input id="link-modal-input" type="text" value="" readonly /></p>
+        <p><input id="show-key-btn" type="button" value="" class="active" /></p>
+        <p><input id="cpy-link-btn" type="button" value="copy link" class="active" data-clipboard-target="#link-modal-input"/></p>
     </div>
 
 {% endblock %}

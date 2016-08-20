@@ -3,8 +3,13 @@
 {% load staticfiles %}
 {% load fshare_extra %}
 
+{% block additional_style %}
+    <link type="text/css" rel="stylesheet" href="{% static 'website/css/lib/jquery.modal.css' %}" />    
+{% endblock %}
+
 {% block additional_scripts %}
     <script type="application/javascript" src="{% static 'website/js/src/cockpit.js' %}"></script>
+    <script type="application/javascript" src="{% static 'website/js/lib/jquery.modal.js' %}"></script>
 {% endblock %}
 
 {% block title %}Cockpit{% endblock %}
@@ -13,74 +18,28 @@
     <div class="note">
         You can see this page because you are admin. Other non-admin users cannot access the cockpit.
     </div>
-    <div id="pclass-management" data-intro="Generate and revoke registration keys for a specific permission class. Once generated, a key can be used for (only) one registration." data-position="right">
-        <div class="pclass-carrousel slider" id="pclass-menu">
-            {% for p in perms %}
-                <div class="pclass-menu-item">{{ p.name }}</div>
-            {% endfor %}
-        </div>
-        <div id="add-perm-btn">+</div>
-        <!-- 
-        <div class="pclass-carroussel slider">
-        -->
-            {% for p in perms %}
-            <!--
-            <div class="pclass-key-management {% if p.name != "admin" %}hidden{% endif %}" id="{{ p.name }}">
-                    <div class="content">
-                        <div class="info">
-                            <p class="perm-name">
-                                <label>
-                                    Permission name
-                                </label>
-                                <span class="value">{{ p.name }}</span>
-                            </p>
-                            <p class="storage-limit">
-                                <label>
-                                    Storage limit
-                                </label>
-                                <span class="value">{{ p.storage_limit | human_size }}B</span>
-                            </p>
-                            <p class="storage-path">
-                                <label>Path on server</label>
-                                <span class="value">{{ p.base_path }}</span>
-                            </p>
 
-                            <input type="button" data-pclass="{{ p.name }}" class="reg-key-btn" value="Generate a registration key for {{ p.name }} class">
-                        </div>
-                -->
-
-
-                        <table class="perm-tab">
-                            <thead>
-                                <tr>
-                                    <th class="key">key</th>
-                                    <th>status</th>
-                                    <th class="comment">comment</th>
-                                    <th>revocation</th>
-                                </tr>
-                            </thead>
-                            {% for key in unused_keys %}
-                                {% if key.permission == p %}
-                                    <tr>
-                                        <td class="key">
-                                            <input type="text" readonly class="key-input" value={{ key.key }} />
-                                        </td>
-                                        <td><input type="button" value="not distributed"></td>
-                                        <td class="comment">A comment goes there</td>
-                                        <td></td>
-                                    </tr>
-                                {% endif %}
-                            {% endfor %}
-                        </table>
-                    </div>
-                </div>
-            {% endfor %}
-        <!-- 
-        </div>
-        -->
+    <h3>Generate registration key</h3>
+    <div class="note">
+        Generate and revoke registration keys for a specific permission class. 
+        Once generated, a key can be used for (only) one registration.
     </div>
-    <div data-intro="Create new class of user with a given storage limit and a specific storage location on your server. Once created, you can generate registration keys for your new permission." data-position="right">
-        <h3>Create a new permission class</h3>
+
+        <div id="registration-key-form">
+            <select name="class" class="pclass" required>
+                {% for p in perms %}
+                    <option value="{{ p.name }}">{{ p.name }} (max dl: {{ p.max_dl_limit}} | max delay: {{ p.max_expiration_delay }} | storage: {{ p.storage_limit | human_size }})</option>
+                {% endfor %}
+            </select>
+            <input type="button" class="reg-key-btn" value="Generate a registration key" />
+        </div>
+
+    <h3>Create new permission class</h3>
+    <div class="note">
+        Create new class of user with a given storage limit and a specific storage 
+        location on your server. Once created, you can generate registration keys 
+        for your new permission.
+    </div>
         <form action="{% url 'cockpit' %}" method="post">
             {% csrf_token %}
             {{ perm_form.as_p }}
@@ -92,6 +51,13 @@
         var URL_REG_KEY = "{% url 'generate_registration_key' %}";
         var URL_MARK_KEY = "{% url 'mark_key_distributed' %}";
         var URL_REVOKE_KEY = "{% url 'revoke_key' %}";
+
     </script>
 {% endblock %}
 
+{% block additional_html %}
+    <div class="modal" id="key-modal" aria-labelledby="link-label" aria-hidden="true">
+        <h3>registration key</h3>
+        <p><input id="key-modal-input" type="text" value="" readonly /></p>
+    </div>
+{% endblock %}

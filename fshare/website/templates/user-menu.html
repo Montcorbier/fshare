@@ -6,7 +6,7 @@
             <li>
                 <div id="storage-percent-container">
                     <p><label>storage used</label> <span class="value">{{ storage_percent }}%</span></p>
-                    <p><label>available</label> <span class="value">{{ storage_left | human_size }}o</span></p>
+                    <p><label>available</label> <span class="value">{{ storage_left | human_size }}B</span></p>
                 </div>
             </li>
             <li><a href="{% url 'logout' %}" id="logout-btn" class="button">logout</a></li>
