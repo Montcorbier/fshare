@@ -94,8 +94,6 @@ def decrypt_file(file_object, pwd):
                 break
             # Decrypt chunk
             clear_file.write(dec.decrypt(chunk))
-            if i % 100 == 0:
-                print(len(content))
     clear_file.seek(0)
     # Return deciphered content truncated by the padding
     return clear_file
