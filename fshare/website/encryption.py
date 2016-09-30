@@ -1,5 +1,7 @@
 import hashlib
 import os
+import tempfile
+
 from random import randint, choice
 from base64 import b64encode, b64decode
 from Crypto.Cipher import AES
@@ -78,8 +80,7 @@ def decrypt_file(file_object, pwd):
     # Create a AES decryptor object
     dec = AES.new(key, AES.MODE_CBC, iv.encode("utf-8"))
     # Content of the deciphered file to be filled chunk by chunk
-    content = b""
-
+    clear_file = tempfile.TemporaryFile(mode='w+')
     # Open source file
     with open(file_object.path, 'rb') as f:
         # Iteration on each chunk
@@ -87,13 +88,14 @@ def decrypt_file(file_object, pwd):
         while True:
             i += 1
             # Getting bytes from file
-            chunk = f.read(1024*1024)
+            chunk = f.read(CHUNK_SIZE)
             # Detect EOF
             if len(chunk) == 0:
                 break
             # Decrypt chunk
-            content += dec.decrypt(chunk)
+            clear_file.write(dec.decrypt(chunk))
             if i % 100 == 0:
                 print(len(content))
+    clear_file.seek(0)
     # Return deciphered content truncated by the padding
-    return content[:file_object.size]
+    return clear_file

@@ -86,7 +86,7 @@ def get(request, fid):
         fname = f.title
         with open(f.path, 'rb+') as fl:
             content = fl.read()
-    response = HttpResponse(content_type=mimetypes.guess_type(f.title)[0], content=content)
+    response = HttpResponse(content_type=mimetypes.guess_type(f.title)[0], content=content.read(f.size))
     response['Content-Disposition'] = 'attachment; filename="%s"' % smart_str(fname)
     response['Content-Length'] = f.size
     response.set_cookie(key="fileReady", value=1, path="/dl")
