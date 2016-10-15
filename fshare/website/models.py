@@ -153,8 +153,8 @@ class FSUser(models.Model):
     @property
     def storage_left(self):
         storage_used = sum([f.size for f in File.objects.all().filter(owner=self.user)])
-        return self.storage_limit - storage_used
+        return max(self.storage_limit - storage_used, 0)
 
     @property
     def storage_percent(self):
-        return int(100. * (self.storage_limit - self.storage_left) / float(self.storage_limit))
+        return min(int(100. * (self.storage_limit - self.storage_left) / float(self.storage_limit)), 100)
