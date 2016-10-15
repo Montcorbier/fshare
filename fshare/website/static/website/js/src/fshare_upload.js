@@ -42,9 +42,9 @@ $(document).ready(function () {
     fDropzone.options.maxFilesize = max_file_size;
     fDropzone.options.uploadMultiple = true;
     fDropzone.options.parallelUploads = 50;
+
     /*
     fDropzone.options.accept = function (file, done) {
-        console.log("yo");
         var size = 0;
         $.get(form.attr('data-size'), function( data ) {
             size = parseInt(data);
@@ -56,7 +56,7 @@ $(document).ready(function () {
         });
     }
     */
-    // TODO
+
     fDropzone.options.maxFiles = 50;
 
     var nanobar;
@@ -67,8 +67,10 @@ $(document).ready(function () {
     var nanobar =  new Nanobar( options );
 
     var ref_file = null;
+    var err_displayed = false;
 
     fDropzone.on('addedfile', function (file) {
+        error_displayed = false;
         if (ref_file == null)
             ref_file = file;
         if (ref_file != file)
@@ -94,6 +96,13 @@ $(document).ready(function () {
         clearInterval(routine);
         if (file.xhr == undefined)
             return;
+        if (file.xhr.response == "ERROR") {
+            if (!error_displayed) {
+                alert("An error occurred (quota exceeded?)");
+                error_displayed = true;
+            }
+            return;
+        }
         document.title = "FShare - Upload completed"
         var href =  "https://" + document.domain + "/dl/" + file.xhr.response;
         var key = $("input#id_key").val();
