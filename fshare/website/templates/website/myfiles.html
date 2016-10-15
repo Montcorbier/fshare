@@ -20,13 +20,14 @@
         <thead>
             <tr>
                 <td class="small"></td>
-                <td>file</td>
+                <td class="name">file</td>
                 <td class="small">size</td>
                 <td class="small">#dl</td>
-                <td class="small">#max_dl</td>
-                <td class="small">expiration date</td>
-                <td class="vsmall"></td>
-                <td class="vsmall"></td>
+                <td class="small">#max</td>
+                <td class="date">expiration date</td>
+                <td class="verysmall"></td>
+                <td class="gap"></td>
+                <td class="verysmall"></td>
             </tr>
         </thead>
         <tbody>
@@ -45,17 +46,18 @@
                     <td class="small">
                         {{ file.max_dl }}
                     </td>
-                    <td class="small">
+                    <td class="date">
                         {% if file.expiration_date %}
                             {{ file.expiration_date }}
                         {% else %}
                             never
                         {% endif %}
                     </td>
-                    <td class="vsmall">
+                    <td class="verysmall">
                         <div class="link-btn button" data-href="{{ URL_BASE }}{% url 'download' file.id %}" data-fid="{{ file.id }}"><span class="glyphicon glyphicon-link"></span></div>
                     </td>
-                    <td class="vsmall">
+                    <td class="gap"></td>
+                    <td class="verysmall">
                         <div class="button delete-btn" data-href="{% url 'delete' file.id %}" data-csrf="{% csrf_token %}" data-fid="{{ file.id }}" ><span class="glyphicon glyphicon-remove"></span></div>
                     </td>
                 </tr>

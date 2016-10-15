@@ -371,3 +371,46 @@ form, .file-info, .file-content {
         line-height: 197px;
     }
 }
+
+#myfiles {
+    width: 80%;
+    margin: auto;
+    font-size: 0.9em;
+    border-collapse:separate; 
+    border-spacing:5px;
+    thead {
+        border-style: solid;
+        border-width: 0px 0px 0px 0px;
+        border-color: black;
+        tr {
+            height: 50px;
+            font-weight: bold;
+        }
+    }
+    tr {
+        margin-bottom: 5px;
+    }
+    td.gap {
+        width: 5px;
+    }
+    td.small {
+        width: 45px;
+        text-align: right;
+    }
+    td.date {
+        width: 300px;
+        text-align: right;
+        padding-right: 20px;
+        padding-left: 20px;
+    }
+    td.name {
+        padding-right: 20px;
+    }
+    td.verysmall {
+        width: 30px;
+        text-align: center;
+        .glyphicon {
+            line-height: 25px;
+        }
+    }
+}
