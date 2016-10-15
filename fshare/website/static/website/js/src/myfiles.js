@@ -45,5 +45,12 @@ $(document).ready(function() {
         get_filename(this);
     });
 
+    /* Init Copy button */
+    var clip = new Clipboard("#cpy-link-btn");
+    clip.on('success', function(e) {
+        $(filter).removeClass("hidden");
+        $(".text", filter).html("copied!");
+        setTimeout(function() { $(filter).addClass("hidden"); }, 1000);
+    });
 });
 
