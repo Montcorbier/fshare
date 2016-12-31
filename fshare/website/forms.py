@@ -340,12 +340,13 @@ class UploadFileForm(forms.ModelForm):
 
         new_file.save()
 
-        try:
-            # Delete old file on disk
-            os.remove(old_path)
-        except OSError:
-            # If file was not found, pass
-            pass
+        if old_path is not None:
+            try:
+                # Delete old file on disk
+                os.remove(old_path)
+            except OSError:
+                # If file was not found, pass
+                pass
 
         return new_file
 
