@@ -304,6 +304,7 @@ class UploadFileForm(forms.ModelForm):
                 new_file.path = filepath
                 new_file.checksum = md5
                 new_file.iv = iv
+                new_file.nb_dl = 0
             except Exception:
                 new_file = None
         else:
