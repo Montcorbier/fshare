@@ -2,15 +2,75 @@ import hashlib
 import sha3
 import mimetypes
 import json
+from io import BytesIO
+from zipfile import ZipFile
 
 from django.shortcuts import render, HttpResponse, get_object_or_404
 from django.contrib.auth.decorators import login_required 
+from django.core.files.uploadedfile import SimpleUploadedFile, InMemoryUploadedFile
 from django.core.urlresolvers import reverse
+from django.utils.datastructures import MultiValueDict
 from django.utils.encoding import smart_str
 from django.views.decorators.csrf import csrf_exempt
 
+from website.expiration import compute_ttl
 from website.models import File
-from website.encryption import decrypt_file, decrypt_filename
+from website.forms import UploadFileForm
+from website.encryption import decrypt_file, decrypt_filename, generate_random_name
+
+
+def get_files_from_req(request):
+    print request
+    print "YOLO"
+    print request.FILES
+    files = MultiValueDict()
+    # If more than one file was uploaded
+    if len(request.FILES.keys()) > 1:
+        print "ZIP"
+        # Create a list containing all file names
+        file_names = list()
+        # Create a memory IO file
+        in_mem = BytesIO()
+        # Create a ZIP object in memory
+        zipped = ZipFile(in_mem, "w")
+        # Iteration over files
+        for f in request.FILES.values():
+            # Read content
+            content = f.read()
+            # Add it to ZIP archive
+            zipped.writestr(f.name, content)
+            file_names.append(f.name)
+        # Close ZIP archive
+        zipped.close()
+        # Seek to beginning of the ZIP file 
+        in_mem.seek(0)
+        # Get ZIP size
+        zip_size = len(in_mem.read())
+        # Seek to beginning again
+        in_mem.seek(0)
+        # Create a InMemory ZIP file
+        zip_file = InMemoryUploadedFile(
+                                            in_mem, 
+                                            None, 
+                                            "FShare - {0}.zip".format(generate_random_name(10)), 
+                                            "application/zip", 
+                                            zip_size, 
+                                            None, 
+                                            None
+                                        )
+        files["file"] = zip_file
+    else:
+        # If only one file, zipped_files contains the 
+        # unique file and file_names contains the name
+        # of the file
+        if "file[0]" in request.FILES.keys():
+            files["file"] = request.FILES["file[0]"]
+            file_names = [request.FILES["file[0]"].name]
+        elif "file[]" in request.FILES.keys():
+            files["file"] = request.FILES["file[]"]
+            file_names = [request.FILES["file[]"].name]
+    return files, file_names
+
 
 def download(request, fid):
     """
@@ -102,17 +162,31 @@ def get(request, fid):
 @login_required(login_url="login")
 def update(request, fid):
     """
-        Update file content (iif key is None and user is owner)
+        Update file content 
 
     """
     # First, get the file from POST data
     files, file_names = get_files_from_req(request)
     f = get_object_or_404(File, id=fid)
-    if req.user != f.owner:
+    if request.user != f.owner:
         return HttpResponse("KO")
-    form = UploadFileForm(request.POST, files, label_suffix='')
-    form.save(request.user, file_names, f.id)
-    return HttpResponse("OK")
+    request.POST["max_dl"] = f.max_dl
+    request.POST["expiration_date"] = compute_ttl(f.expiration_date)
+    request.POST["key"] = f.real_key
+    form = UploadFileForm(
+            request.POST, 
+            files, 
+            label_suffix='', 
+            user=request.user, 
+                )
+    # initial={'max_dl': 0, 'expiration_date': None})
+    print form.fields
+    if form.is_valid(request.user):
+        form.save(request.user, file_names, f.id)
+        return HttpResponse("OK")
+    else:
+        print form.errors
+        return HttpResponse("KO")
 
     
 @login_required(login_url="login")

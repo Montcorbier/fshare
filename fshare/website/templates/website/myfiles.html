@@ -8,9 +8,11 @@
 {% endblock %}
 
 {% block additional_scripts %}
+    <script type="application/javascript" src="{% static 'website/js/lib/dropzone.js' %}"></script>
     <script type="application/javascript" src="{% static 'website/js/lib/jquery.modal.js' %}"></script>
     <script type="application/javascript" src="{% static 'website/js/src/modal.js' %}"></script>
     <script type="application/javascript" src="{% static 'website/js/src/myfiles.js' %}"></script>
+    <script type="application/javascript" src="{% static 'website/js/src/update.js' %}"></script>
 {% endblock %}
 
 {% load fshare_extra %}
@@ -25,6 +27,8 @@
                 <td class="small">#dl</td>
                 <td class="small">#max</td>
                 <td class="date">expiration date</td>
+                <td class="update">change content</td>
+                <td class="gap"></td>
                 <td class="verysmall"></td>
                 <td class="gap"></td>
                 <td class="verysmall"></td>
@@ -53,6 +57,22 @@
                             never
                         {% endif %}
                     </td>
+                    <td class="update">
+                        <form class="update-form" action="{{ URL_BASE}}{% url 'update' file.id %}" method="POST" enctype="multipart/form-data" class="upload-info" data-size="{% url "size_available" %}">
+                        {% csrf_token %}
+                        <div id="dropzone-{{ file.id }}" class="dropzone" action="{{ URL_BASE }}{% url 'update' file.id %}">
+                            <div class="dz-message">Click or drop your file here</div>
+                        </div>
+                        <!-- 
+                        <form method="post" enctype="multipart/form-data" action="{{ URL_BASE }}{% url 'update' file.id %}">
+                            {% csrf_token %}
+                            <input type="file" name="file[]" multiple>
+                            <input type="hidden" name="key" value="{{ file.real_key }}">
+                            <input type="submit" value="Upload">
+                        -->
+                        </form>
+                    </td>
+                    <td class="gap"></td>
                     <td class="verysmall">
                         <div class="link-btn button" data-href="{{ URL_BASE }}{% url 'download' file.id %}" data-fid="{{ file.id }}"><span class="glyphicon glyphicon-link"></span></div>
                     </td>

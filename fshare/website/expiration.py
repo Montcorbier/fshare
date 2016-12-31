@@ -1,4 +1,5 @@
-from datetime import datetime, timedelta
+from datetime import timedelta
+from django.utils import timezone
 
 def compute_expiration_date(ttl):
     """
@@ -11,5 +12,9 @@ def compute_expiration_date(ttl):
     """
     if ttl == 0:
         return None
-    return datetime.now() + timedelta(days=ttl)
+    return timezone.now() + timedelta(days=ttl)
 
+def compute_ttl(expiration_date):
+    if expiration_date is None:
+        return 0
+    return (expiration_date - timezone.now()).days

@@ -276,6 +276,7 @@ class UploadFileForm(forms.ModelForm):
         filename_safe = smart_str(uploaded_file.name, "utf-8")
         file_list_safe = smart_str(json.dumps(file_names), "utf-8")
 
+        print key
         if key is not None:
             iv, md5, filepath = encrypt_file(filename_safe, uploaded_file, folder, key)
             filename = encrypt_filename(filename_safe, key, iv)
@@ -292,14 +293,17 @@ class UploadFileForm(forms.ModelForm):
                     destination.write(chunk)
             md5 = m.hexdigest()
 
+        old_path = None
         if fid is not None:
             try:
                 new_file = File.objects.get(id=fid)
-                new_file.title = filename,
-                new_file.size = uploaded_file.size,
-                new_file.file_list = file_list, 
-                new_file.path = filepath,
-                new_file.checksum = md5,
+                old_path = new_file.path
+                new_file.title = filename
+                new_file.size = uploaded_file.size
+                new_file.file_list = file_list
+                new_file.path = filepath
+                new_file.checksum = md5
+                new_file.iv = iv
             except Exception:
                 new_file = None
         else:
@@ -335,5 +339,13 @@ class UploadFileForm(forms.ModelForm):
             new_file.pwd = pwd
 
         new_file.save()
+
+        try:
+            # Delete old file on disk
+            os.remove(old_path)
+        except OSError:
+            # If file was not found, pass
+            pass
+
         return new_file
 

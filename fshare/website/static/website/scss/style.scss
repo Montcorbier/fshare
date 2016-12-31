@@ -398,10 +398,31 @@ form, .file-info, .file-content {
         text-align: right;
     }
     td.date {
-        width: 300px;
+        width: 220px;
         text-align: right;
         padding-right: 20px;
         padding-left: 20px;
+    }
+    td.update {
+        text-align: right;
+        width: 220px;
+        form {
+            height: 30px;
+            line-height: 30px;
+            cursor: pointer;
+            display: block;
+            margin: auto;
+        }
+        input {
+            display: inline-block;
+            height: 30px;
+            margin: 0px;
+            width: 150px;
+            &[type="submit"] {
+                width: 70px;
+                float: right;
+            }
+        }
     }
     td.name {
         padding-right: 20px;
@@ -417,4 +438,9 @@ form, .file-info, .file-content {
 
 .bar {
     background-color: $dark-color; 
+}
+
+
+.dz-preview {
+    display: none;
 }

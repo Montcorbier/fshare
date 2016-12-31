@@ -135,7 +135,6 @@ class FSUser(models.Model):
             Check if a user can upload a file
 
         """
-        print(max_dl, ttl)
         # max_dl_limit set to 0 means no limit
         if self.permission.max_dl_limit > 0:
             if max_dl is None or max_dl > self.permission.max_dl_limit:
