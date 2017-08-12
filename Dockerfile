@@ -23,5 +23,5 @@ CMD uwsgi \
 	--http :8000 \
 	--module fshare.wsgi \
 	--socket fshare.sock \
-	--chmod-socket 666
+	--chmod-socket 776
 
