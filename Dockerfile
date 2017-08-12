@@ -11,9 +11,16 @@ WORKDIR /app
 
 RUN pip install -r fshare/requirements.txt
 
-COPY . /app
-WORKDIR /app/fshare/website/static/website
+COPY ./fshare /app
+WORKDIR /app/website/static/website
 RUN compass compile
 
 WORKDIR /app
+
+RUN ./manage.py collectstatic --noinput
+
+CMD uwsgi \
+	--http :8000 \
+	--module fshare.wsgi \
+	--socket fshare.sock
 
