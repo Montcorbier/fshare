@@ -22,6 +22,6 @@ RUN ./manage.py collectstatic --noinput
 CMD uwsgi \
 	--http :8000 \
 	--module fshare.wsgi \
-	--chmode-socket=776 \
+	--chmod-socket=776 \
 	--socket fshare.sock
 
