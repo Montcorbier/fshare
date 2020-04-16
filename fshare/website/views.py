@@ -49,8 +49,6 @@ def myfiles(request):
     ctxt["title"] = "My files"
     tpl = "website/myfiles.html"
     ctxt["files"] = File.objects.all().filter(owner=request.user)
-    for f in ctxt["files"]:
-        print(f)
     return render(request, tpl, ctxt)
 
 
@@ -75,7 +73,8 @@ def upload(request):
         form = UploadFileForm(request.POST, files, label_suffix='', user=request.user)
         if form.is_valid(request.user):
             f = form.save(request.user, file_names)
-            return HttpResponse(f.id)
+            url = request.build_absolute_uri(location='dl/{}'.format(f.id))
+            return HttpResponse(url + "\n")
         else:
             return HttpResponse("ERROR")
     raise Http404
