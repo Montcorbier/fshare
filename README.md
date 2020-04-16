@@ -33,7 +33,7 @@ We cannot give you more details about these bounds because it depends on the cla
 Every registration requires a registration key provided by the owner of the website (in this case, us). The key
 corresponds to a certain class of restrictions that sets the bounds for your account. 
 
-To get a registration key, send a request to fshare@udt.fr. The more we know you personally, the less restrictions
+To get a registration key, send a request to fshare@udtq.fr. The more we know you personally, the less restrictions
 you'll have.
 
 ### CLI
