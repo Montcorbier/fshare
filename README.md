@@ -36,6 +36,16 @@ corresponds to a certain class of restrictions that sets the bounds for your acc
 To get a registration key, send a request to fshare@udt.fr. The more we know you personally, the less restrictions
 you'll have.
 
+### CLI
+
+For now, it returns the ID of the uploaded file:
+```
+$> curl -k -F "file[]=@test.txt" https://fshare.udtq.fr/upload
+IujVKphI8goB
+```
+
+In this example, file is now available at `https://fshare.udtq.fr/dl/IujVKphI8goB`.
+
 ## Improvements to come
 
 ### Technical documentation
