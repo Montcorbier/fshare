@@ -86,9 +86,3 @@ Due to performance caring and technical specificities, the encryption of files i
 the server. Even if the server does drop the key after this step, it is still a problem because it 
 knows at some point both the file and the key. We are working on a client-side encryption and 
 decryption to improve this point.
-
-### Miscellanous QoL Improvements
-* WeeChat plugin
-* Support for CLI web-browsers
-
-
